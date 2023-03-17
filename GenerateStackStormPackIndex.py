@@ -10,6 +10,7 @@
 '''
 
 import os
+import glob
 import yaml
 
 #===============================================================================
@@ -25,7 +26,6 @@ __GITHUB_URL_BASE = "https://github.com/JasonPiszcyk/"
 #===============================================================================
 # Main processing
 #===============================================================================
-first_time = True
 
 # Create the index file
 index_file = open(__PACK_INDEX_FILE, "w")
@@ -37,29 +37,60 @@ repo_subdir_list = [f.name for f in os.scandir(__BASE_DIR) if f.is_dir()]
 # Process each repository witch a pack.yaml file
 for subdir_name in repo_subdir_list:
     subdir = __BASE_DIR + "/" + subdir_name
+
+    pack_comma = ""
     if os.path.isfile(subdir + "/pack.yaml"):
         # Extract info from the pack.yaml file
         with open(subdir + "/pack.yaml", "r") as file:
             pack_yaml = yaml.safe_load(file)
 
-        # Clean up the commas, in the JSON
-        if not first_time:
-            index_file.write(",")
-        else:
-            first_time = False
-
-        index_file.write("\n")
+        index_file.write(pack_comma +"\n")
+        pack_comma = ","
         
         # Create the pack info
         index_file.write("    \"" + pack_yaml['ref'] + "\": {\n")
         index_file.write("      \"name\": \"" + pack_yaml['name'] + "\",\n")
+        index_file.write("      \"description\": \"" + pack_yaml['description'] + "\",\n")
         index_file.write("      \"version\": \"" + pack_yaml['version'] + "\",\n")
+        index_file.write("      \"author\": \"" + pack_yaml['author'] + "\",\n")
+        index_file.write("      \"email\": \"" + pack_yaml['email'] + "\",\n")
 
-        index_file.write("      \"repo_url\": \"" + __GITHUB_URL_BASE + subdir_name + "\"\n")
+        # Add some info on content
+        index_file.write("      \"content\": {")
 
-        # Get a list of all yaml files in subdir list
+        # Go through the directories
+        res_comma = ""
+        for resdir_name in __PACK_SUBDIR_LIST:
+            index_file.write(res_comma + "\n        \"" + resdir_name + "\": {")
+            res_comma = ","
+
+            resdir = subdir + "/" + resdir_name
+
+            # Get a list of yaml files in this dir
+            yaml_list = glob.glob(resdir + "/*.yaml")
+            resource_list = []
+
+            # Process the files
+            for yaml_file in yaml_list:
+                if os.path.isfile(yaml_file):
+                    with open(yaml_file, "r") as file:
+                        res_yaml = yaml.safe_load(file)
+                    
+                    resource_list.append(res_yaml["name"])
+                    
+            # Add the resource info
+            index_file.write("\n          \"count\": " + str(len(resource_list)) + "\n")
+            index_file.write("          \"resources\": [\n")
+
+            for resname in resource_list:
+                index_file.write("            \"" + res_yaml["name"] + "\"\n")
+
+            index_file.write("          ]\n")
+
+        index_file.write("        }\n      },\n")
 
         # Close out the description
+        index_file.write("      \"repo_url\": \"" + __GITHUB_URL_BASE + subdir_name + "\"\n")
         index_file.write("    }")
 
 # Close the index file

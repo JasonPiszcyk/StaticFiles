@@ -2,7 +2,18 @@
   "packs": {
     "nomad": {
       "name": "nomad",
+      "description": "Manage Nomad Environment",
       "version": "1.0.0",
+      "author": "Jason Piszcyk",
+      "email": "Jason@Piszcyk.com",
+      "content": {
+        "actions": {
+          "count": 1
+          "resources": [
+            "list_nodes"
+          ]
+        }
+      },
       "repo_url": "https://github.com/JasonPiszcyk/StackStorm-Nomad"
     }
   }

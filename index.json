@@ -1,0 +1,9 @@
+{
+  "packs": {
+    "nomad": {
+      "name": "nomad",
+      "version": "1.0.0",
+      "repo_url": "https://github.com/JasonPiszcyk/StackStorm-Nomad"
+    }
+  }
+}

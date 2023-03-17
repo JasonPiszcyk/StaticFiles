@@ -8,7 +8,7 @@
       "email": "Jason@Piszcyk.com",
       "content": {
         "actions": {
-          "count": 1
+          "count": 1,
           "resources": [
             "list_nodes"
           ]

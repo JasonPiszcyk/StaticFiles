@@ -79,7 +79,7 @@ for subdir_name in repo_subdir_list:
                     resource_list.append(res_yaml["name"])
                     
             # Add the resource info
-            index_file.write("\n          \"count\": " + str(len(resource_list)) + "\n")
+            index_file.write("\n          \"count\": " + str(len(resource_list)) + ",\n")
             index_file.write("          \"resources\": [\n")
 
             for resname in resource_list:

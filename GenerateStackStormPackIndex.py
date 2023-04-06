@@ -80,12 +80,14 @@ for subdir_name in repo_subdir_list:
                     
             # Add the resource info
             index_file.write("\n          \"count\": " + str(len(resource_list)) + ",\n")
-            index_file.write("          \"resources\": [\n")
+            index_file.write("          \"resources\": [")
 
+            res_comma = ""
             for resname in resource_list:
-                index_file.write("            \"" + res_yaml["name"] + "\"\n")
+                index_file.write(res_comma + "\n            \"" + resname + "\"")
+                res_comma = ","
 
-            index_file.write("          ]\n")
+            index_file.write("\n          ]\n")
 
         index_file.write("        }\n      },\n")
 

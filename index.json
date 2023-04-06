@@ -3,13 +3,14 @@
     "nomad": {
       "name": "nomad",
       "description": "Manage Nomad Environment",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": "Jason Piszcyk",
       "email": "Jason@Piszcyk.com",
       "content": {
         "actions": {
-          "count": 1,
+          "count": 2,
           "resources": [
+            "list_allocations",
             "list_nodes"
           ]
         }

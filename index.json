@@ -15,7 +15,7 @@
           ]
         }
       },
-      "repo_url": "https://github.com/JasonPiszcyk/StackStorm-Nomad"
+      "repo_url": "git@github.com:JasonPiszcyk/StackStorm-Nomad"
     }
   }
 }

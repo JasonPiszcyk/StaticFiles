@@ -19,9 +19,9 @@ import yaml
 __BASE_DIR = "/Users/jp/GitHub"
 __PACK_INDEX_FILE = __BASE_DIR + "/StaticFiles/index.json"
 __PACK_SUBDIR_LIST = ["actions"]
-__GITHUB_URL_BASE = "https://github.com/JasonPiszcyk/"
+# __GITHUB_URL_BASE = "https://github.com/JasonPiszcyk/"
+__GITHUB_URL_BASE = "git@github.com:JasonPiszcyk/"
 
-# https://github.com/JasonPiszcyk/StackStorm-Nomad.git
 
 #===============================================================================
 # Main processing

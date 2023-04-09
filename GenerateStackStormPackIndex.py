@@ -25,7 +25,8 @@ __BASE_DIR = "/Users/jp/GitHub"
 __PACK_INDEX_FILE = __BASE_DIR + "/StaticFiles/index.json"
 __PACK_SUBDIR_LIST = ["actions"]
 # __GITHUB_URL_BASE = "https://github.com/JasonPiszcyk/"
-__GITHUB_URL_BASE = "git@github.com:JasonPiszcyk/"
+__GITHUB_URL_BASE = "git@github.com"
+__GITHUB_USER = "JasonPiszcyk"
 
 
 #===============================================================================
@@ -63,7 +64,7 @@ for subdir_name in repo_subdir_list:
             'name': pack_yaml['name'],
             'description': pack_yaml['description'],
             'version': pack_yaml['version'],
-            'repo_url': __GITHUB_URL_BASE + subdir_name,
+            'repo_url': __GITHUB_URL_BASE + "-" + subdir_name + ":" + __GITHUB_USER + "/" + subdir_name,
             'author': pack_yaml['author'],
             'email': pack_yaml['email']
         }

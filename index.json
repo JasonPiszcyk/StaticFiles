@@ -1,6 +1,6 @@
 {
     "metadata": {
-        "generated_ts": 1681057665,
+        "generated_ts": 1681059476,
         "hash": "44ee3735d01d7cc54ee3bb667f007dfe"
     },
     "packs": {
@@ -19,7 +19,7 @@
             "description": "Manage Nomad Environment",
             "email": "Jason@Piszcyk.com",
             "name": "nomad",
-            "repo_url": "git@github.com:JasonPiszcyk/StackStorm-Nomad",
+            "repo_url": "git@github.com-StackStorm-Nomad:JasonPiszcyk/StackStorm-Nomad",
             "version": "1.0.5"
         },
         "proxmox": {
@@ -48,7 +48,7 @@
             "description": "Proxmox Connectivity",
             "email": "Jason@Piszcyk.com",
             "name": "proxmox",
-            "repo_url": "git@github.com:JasonPiszcyk/StackStorm-Proxmox",
+            "repo_url": "git@github.com-StackStorm-Proxmox:JasonPiszcyk/StackStorm-Proxmox",
             "version": "1.0.1"
         },
         "sysadm": {
@@ -67,7 +67,7 @@
             "description": "System Admin tasks",
             "email": "Jason@Piszcyk.com",
             "name": "sysadm",
-            "repo_url": "git@github.com:JasonPiszcyk/StackStorm-Sysadm",
+            "repo_url": "git@github.com-StackStorm-Sysadm:JasonPiszcyk/StackStorm-Sysadm",
             "version": "1.0.1"
         }
     }

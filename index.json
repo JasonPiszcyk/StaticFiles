@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1681059476,
-        "hash": "44ee3735d01d7cc54ee3bb667f007dfe"
+        "generated_ts": 1681060674,
+        "hash": "54c5bd44102828afe62b30a6d29ee6e7"
     },
     "packs": {
         "nomad": {
@@ -49,7 +49,7 @@
             "email": "Jason@Piszcyk.com",
             "name": "proxmox",
             "repo_url": "git@github.com-StackStorm-Proxmox:JasonPiszcyk/StackStorm-Proxmox",
-            "version": "1.0.1"
+            "version": "1.0.2"
         },
         "sysadm": {
             "author": "Jason Piszcyk",

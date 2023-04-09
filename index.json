@@ -1,23 +1,24 @@
 {
-  "packs": {
-    "nomad": {
-      "name": "nomad",
-      "description": "Manage Nomad Environment",
-      "version": "1.0.2",
-      "author": "Jason Piszcyk",
-      "email": "Jason@Piszcyk.com",
-      "content": {
-        "actions": {
-          "count": 4,
-          "resources": [
-            "drain_node",
-            "make_node_eligible",
-            "list_allocations",
-            "list_nodes"
-          ]
+    "metadata": {
+        "generated_ts": 1681040749,
+        "hash": "a51c3d986651888d3ef05d9369857bba"
+    },
+    "packs": {
+        "nomad": {
+            "author": "Jason Piszcyk",
+            "content": {
+                "count": 4,
+                "resources": [
+                    "drain_node",
+                    "make_node_eligible",
+                    "list_allocations",
+                    "list_nodes"
+                ]
+            },
+            "description": "Manage Nomad Environment",
+            "email": "Jason@Piszcyk.com",
+            "name": "nomad",
+            "version": "1.0.2"
         }
-      },
-      "repo_url": "git@github.com:JasonPiszcyk/StackStorm-Nomad"
     }
-  }
 }

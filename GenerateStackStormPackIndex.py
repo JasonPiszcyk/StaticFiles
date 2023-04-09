@@ -12,6 +12,11 @@
 import os
 import glob
 import yaml
+import json
+from collections import OrderedDict
+import hashlib
+import time
+
 
 #===============================================================================
 # Global Variables (our Constants)
@@ -27,9 +32,16 @@ __GITHUB_URL_BASE = "git@github.com:JasonPiszcyk/"
 # Main processing
 #===============================================================================
 
-# Create the index file
-index_file = open(__PACK_INDEX_FILE, "w")
-index_file.write("{\n  \"packs\": {")
+# Create a Dict with the values for the index
+index_dict = OrderedDict({
+    'packs': OrderedDict(),
+    'metadata': OrderedDict([
+        ('generated_ts', None),
+        ('hash', None)
+    ])
+})
+
+data_hash = hashlib.md5()
 
 # Get a list of directories/repositories
 repo_subdir_list = [f.name for f in os.scandir(__BASE_DIR) if f.is_dir()]
@@ -38,36 +50,29 @@ repo_subdir_list = [f.name for f in os.scandir(__BASE_DIR) if f.is_dir()]
 for subdir_name in repo_subdir_list:
     subdir = __BASE_DIR + "/" + subdir_name
 
-    pack_comma = ""
     if os.path.isfile(subdir + "/pack.yaml"):
         # Extract info from the pack.yaml file
-        with open(subdir + "/pack.yaml", "r") as file:
+        with open(subdir + "/pack.yaml", "r", encoding="utf8") as file:
             pack_yaml = yaml.safe_load(file)
 
-        index_file.write(pack_comma +"\n")
-        pack_comma = ","
-        
+        data_hash.update(str(pack_yaml).encode('utf-8'))
+
+        pack_ref = pack_yaml['ref']
         # Create the pack info
-        index_file.write("    \"" + pack_yaml['ref'] + "\": {\n")
-        index_file.write("      \"name\": \"" + pack_yaml['name'] + "\",\n")
-        index_file.write("      \"description\": \"" + pack_yaml['description'] + "\",\n")
-        index_file.write("      \"version\": \"" + pack_yaml['version'] + "\",\n")
-        index_file.write("      \"author\": \"" + pack_yaml['author'] + "\",\n")
-        index_file.write("      \"email\": \"" + pack_yaml['email'] + "\",\n")
+        index_dict['packs'][pack_ref] = {
+            'name': pack_yaml['name'],
+            'description': pack_yaml['description'],
+            'version': pack_yaml['version'],
+            'author': pack_yaml['author'],
+            'email': pack_yaml['email']
+        }
 
-        # Add some info on content
-        index_file.write("      \"content\": {")
-
-        # Go through the directories
-        res_comma = ""
+        # Go through the sub directories of the pack
         for resdir_name in __PACK_SUBDIR_LIST:
-            index_file.write(res_comma + "\n        \"" + resdir_name + "\": {")
-            res_comma = ","
-
-            resdir = subdir + "/" + resdir_name
-
             # Get a list of yaml files in this dir
+            resdir = subdir + "/" + resdir_name
             yaml_list = glob.glob(resdir + "/*.yaml")
+
             resource_list = []
 
             # Process the files
@@ -79,22 +84,17 @@ for subdir_name in repo_subdir_list:
                     resource_list.append(res_yaml["name"])
                     
             # Add the resource info
-            index_file.write("\n          \"count\": " + str(len(resource_list)) + ",\n")
-            index_file.write("          \"resources\": [")
+            index_dict['packs'][pack_ref]["content"] = {
+                'count': len(resource_list),
+                'resources': resource_list       
+            }
 
-            res_comma = ""
-            for resname in resource_list:
-                index_file.write(res_comma + "\n            \"" + resname + "\"")
-                res_comma = ","
 
-            index_file.write("\n          ]\n")
+# Generate the timestamp/hash value
+index_dict['metadata']['generated_ts'] = int(time.time())
+index_dict['metadata']['hash'] = data_hash.hexdigest()
 
-        index_file.write("        }\n      },\n")
+# Write the index file
+with open(__PACK_INDEX_FILE, 'w', encoding="utf8") as index_file:
+    json.dump(index_dict, index_file, indent=4, sort_keys=True, separators=(',', ': '))
 
-        # Close out the description
-        index_file.write("      \"repo_url\": \"" + __GITHUB_URL_BASE + subdir_name + "\"\n")
-        index_file.write("    }")
-
-# Close the index file
-index_file.write("\n  }\n}\n")
-index_file.close()

@@ -63,6 +63,7 @@ for subdir_name in repo_subdir_list:
             'name': pack_yaml['name'],
             'description': pack_yaml['description'],
             'version': pack_yaml['version'],
+            'repo_url': __GITHUB_URL_BASE + subdir_name,
             'author': pack_yaml['author'],
             'email': pack_yaml['email']
         }

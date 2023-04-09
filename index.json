@@ -1,6 +1,6 @@
 {
     "metadata": {
-        "generated_ts": 1681040749,
+        "generated_ts": 1681041116,
         "hash": "a51c3d986651888d3ef05d9369857bba"
     },
     "packs": {
@@ -18,6 +18,7 @@
             "description": "Manage Nomad Environment",
             "email": "Jason@Piszcyk.com",
             "name": "nomad",
+            "repo_url": "git@github.com:JasonPiszcyk/StackStorm-Nomad",
             "version": "1.0.2"
         }
     }

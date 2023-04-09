@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1681041744,
-        "hash": "48b183ab01989c9f85e006eb0edac301"
+        "generated_ts": 1681043980,
+        "hash": "761f3c5949a849c92a943f7e25f2de4e"
     },
     "packs": {
         "nomad": {
@@ -19,7 +19,7 @@
             "email": "Jason@Piszcyk.com",
             "name": "nomad",
             "repo_url": "git@github.com:JasonPiszcyk/StackStorm-Nomad",
-            "version": "1.0.3"
+            "version": "1.0.4"
         }
     }
 }

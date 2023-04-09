@@ -1,25 +1,74 @@
 {
     "metadata": {
-        "generated_ts": 1681043980,
-        "hash": "761f3c5949a849c92a943f7e25f2de4e"
+        "generated_ts": 1681057665,
+        "hash": "44ee3735d01d7cc54ee3bb667f007dfe"
     },
     "packs": {
         "nomad": {
             "author": "Jason Piszcyk",
             "content": {
-                "count": 4,
+                "count": 5,
                 "resources": [
                     "drain_node",
                     "make_node_eligible",
                     "list_allocations",
-                    "list_nodes"
+                    "list_nodes",
+                    "get_config"
                 ]
             },
             "description": "Manage Nomad Environment",
             "email": "Jason@Piszcyk.com",
             "name": "nomad",
             "repo_url": "git@github.com:JasonPiszcyk/StackStorm-Nomad",
-            "version": "1.0.4"
+            "version": "1.0.5"
+        },
+        "proxmox": {
+            "author": "Jason Piszcyk",
+            "content": {
+                "count": 16,
+                "resources": [
+                    "refresh_packages",
+                    "reboot_node",
+                    "get_vm_id_from_name",
+                    "start_vm",
+                    "migrate_vm",
+                    "restart_node",
+                    "enforce_status",
+                    "list_all_vmids",
+                    "zip",
+                    "shutdown_vm",
+                    "list_vmids_per_node",
+                    "evacuate_node",
+                    "get_vm_info",
+                    "upgrade_node",
+                    "list_nodes",
+                    "get_config"
+                ]
+            },
+            "description": "Proxmox Connectivity",
+            "email": "Jason@Piszcyk.com",
+            "name": "proxmox",
+            "repo_url": "git@github.com:JasonPiszcyk/StackStorm-Proxmox",
+            "version": "1.0.1"
+        },
+        "sysadm": {
+            "author": "Jason Piszcyk",
+            "content": {
+                "count": 6,
+                "resources": [
+                    "create_zabbix_maintenance",
+                    "extract_zabbix_info",
+                    "remove_zabbix_maintenance",
+                    "update_proxmox_node",
+                    "update_nomad_nodes",
+                    "Fix Consul Raft Leader"
+                ]
+            },
+            "description": "System Admin tasks",
+            "email": "Jason@Piszcyk.com",
+            "name": "sysadm",
+            "repo_url": "git@github.com:JasonPiszcyk/StackStorm-Sysadm",
+            "version": "1.0.1"
         }
     }
 }

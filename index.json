@@ -8,8 +8,10 @@
       "email": "Jason@Piszcyk.com",
       "content": {
         "actions": {
-          "count": 2,
+          "count": 4,
           "resources": [
+            "drain_node",
+            "make_node_eligible",
             "list_allocations",
             "list_nodes"
           ]

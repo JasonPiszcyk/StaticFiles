@@ -1,16 +1,17 @@
 {
     "metadata": {
-        "generated_ts": 1681060849,
-        "hash": "714d698337418f3e47df8e9b87388e39"
+        "generated_ts": 1681064162,
+        "hash": "7df2e6cc4f3c88e44229fd769b49385e"
     },
     "packs": {
         "nomad": {
             "author": "Jason Piszcyk",
             "content": {
-                "count": 5,
+                "count": 6,
                 "resources": [
                     "drain_node",
                     "make_node_eligible",
+                    "get_node_id",
                     "list_allocations",
                     "list_nodes",
                     "get_config"
@@ -20,7 +21,7 @@
             "email": "Jason@Piszcyk.com",
             "name": "nomad",
             "repo_url": "git@github.com-StackStorm-Nomad:JasonPiszcyk/StackStorm-Nomad",
-            "version": "1.0.6"
+            "version": "1.0.7"
         },
         "proxmox": {
             "author": "Jason Piszcyk",
@@ -68,7 +69,7 @@
             "email": "Jason@Piszcyk.com",
             "name": "sysadm",
             "repo_url": "git@github.com-StackStorm-Sysadm:JasonPiszcyk/StackStorm-Sysadm",
-            "version": "1.0.2"
+            "version": "1.0.3"
         }
     }
 }

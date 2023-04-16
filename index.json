@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1681064162,
-        "hash": "7df2e6cc4f3c88e44229fd769b49385e"
+        "generated_ts": 1681660220,
+        "hash": "fb5d93ac04b61fdc4d6f3080bfca86b3"
     },
     "packs": {
         "nomad": {
@@ -21,7 +21,7 @@
             "email": "Jason@Piszcyk.com",
             "name": "nomad",
             "repo_url": "git@github.com-StackStorm-Nomad:JasonPiszcyk/StackStorm-Nomad",
-            "version": "1.0.7"
+            "version": "1.0.8"
         },
         "proxmox": {
             "author": "Jason Piszcyk",
@@ -55,11 +55,14 @@
         "sysadm": {
             "author": "Jason Piszcyk",
             "content": {
-                "count": 6,
+                "count": 9,
                 "resources": [
+                    "reboot_linux",
                     "create_zabbix_maintenance",
                     "extract_zabbix_info",
+                    "is_reboot_required_linux",
                     "remove_zabbix_maintenance",
+                    "apply_updates_linux",
                     "update_proxmox_node",
                     "update_nomad_nodes",
                     "Fix Consul Raft Leader"
@@ -69,7 +72,7 @@
             "email": "Jason@Piszcyk.com",
             "name": "sysadm",
             "repo_url": "git@github.com-StackStorm-Sysadm:JasonPiszcyk/StackStorm-Sysadm",
-            "version": "1.0.3"
+            "version": "1.0.4"
         }
     }
 }

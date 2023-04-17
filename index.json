@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1681682217,
-        "hash": "22109b1bd156bc957fc126fc64999f60"
+        "generated_ts": 1681752146,
+        "hash": "b8db03dacdb27ab33bcb203a058e4e9c"
     },
     "packs": {
         "nomad": {
@@ -55,13 +55,14 @@
         "sysadm": {
             "author": "Jason Piszcyk",
             "content": {
-                "count": 11,
+                "count": 12,
                 "resources": [
                     "reboot_linux",
                     "create_zabbix_maintenance",
                     "extract_zabbix_info",
                     "update_linux_hosts",
                     "is_reboot_required_linux",
+                    "reboot_nomad_node",
                     "filter_zabbix_host_list",
                     "remove_zabbix_maintenance",
                     "apply_updates_linux",
@@ -74,7 +75,7 @@
             "email": "Jason@Piszcyk.com",
             "name": "sysadm",
             "repo_url": "git@github.com-StackStorm-Sysadm:JasonPiszcyk/StackStorm-Sysadm",
-            "version": "1.0.6"
+            "version": "1.0.7"
         }
     }
 }

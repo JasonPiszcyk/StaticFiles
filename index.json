@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1683106717,
-        "hash": "35d19b5c6e8c14e3a6c3d8c1f2fab3c5"
+        "generated_ts": 1683131882,
+        "hash": "67ef51c169f4a9da32ed30cb6512cd17"
     },
     "packs": {
         "nomad": {
@@ -93,7 +93,7 @@
             "email": "Jason@Piszcyk.com",
             "name": "winadmin",
             "repo_url": "git@github.com-StackStorm-WinAdmin:JasonPiszcyk/StackStorm-WinAdmin",
-            "version": "0.0.3"
+            "version": "0.0.4"
         }
     }
 }

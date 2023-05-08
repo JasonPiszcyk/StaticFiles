@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1683561402,
-        "hash": "71cba6c8f51414933f28f5c9b8db6e59"
+        "generated_ts": 1683575434,
+        "hash": "ad9d1b4af0cdad417ad22d881eebcdba"
     },
     "packs": {
         "nomad": {
@@ -82,13 +82,14 @@
         "winadmin": {
             "author": "Jason Piszcyk",
             "content": {
-                "count": 13,
+                "count": 14,
                 "resources": [
                     "create_zabbix_maintenance",
                     "update_windows_hosts",
                     "apply_updates_and_reboot",
                     "reboot_win_host_command",
                     "is_reboot_required_win",
+                    "windows_updates_available",
                     "reboot_win",
                     "filter_zabbix_host_list",
                     "wu_job_is_running",
@@ -103,7 +104,7 @@
             "email": "Jason@Piszcyk.com",
             "name": "winadmin",
             "repo_url": "git@github.com-StackStorm-WinAdmin:JasonPiszcyk/StackStorm-WinAdmin",
-            "version": "0.0.6"
+            "version": "0.0.7"
         }
     }
 }

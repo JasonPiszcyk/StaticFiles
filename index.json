@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1683720484,
-        "hash": "8ff595ff63816b02861d5274147c9db3"
+        "generated_ts": 1683722785,
+        "hash": "42b52daea0e224b73b2cfbd8311a19bf"
     },
     "packs": {
         "nomad": {
@@ -80,7 +80,7 @@
             "email": "Jason@Piszcyk.com",
             "name": "sysadm",
             "repo_url": "git@github.com-StackStorm-Sysadm:JasonPiszcyk/StackStorm-Sysadm",
-            "version": "1.1.6"
+            "version": "1.1.7"
         },
         "winadmin": {
             "author": "Jason Piszcyk",

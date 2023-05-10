@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1683575434,
-        "hash": "ad9d1b4af0cdad417ad22d881eebcdba"
+        "generated_ts": 1683720484,
+        "hash": "8ff595ff63816b02861d5274147c9db3"
     },
     "packs": {
         "nomad": {
@@ -26,14 +26,16 @@
         "proxmox": {
             "author": "Jason Piszcyk",
             "content": {
-                "count": 16,
+                "count": 19,
                 "resources": [
                     "refresh_packages",
                     "reboot_node",
                     "get_vm_id_from_name",
                     "start_vm",
                     "migrate_vm",
+                    "dump_vm_config",
                     "restart_node",
+                    "dump_all_vm_configs",
                     "enforce_status",
                     "list_all_vmids",
                     "zip",
@@ -41,6 +43,7 @@
                     "list_vmids_per_node",
                     "evacuate_node",
                     "get_vm_info",
+                    "backup_vm",
                     "upgrade_node",
                     "list_nodes",
                     "get_config"
@@ -50,7 +53,7 @@
             "email": "Jason@Piszcyk.com",
             "name": "proxmox",
             "repo_url": "git@github.com-StackStorm-Proxmox:JasonPiszcyk/StackStorm-Proxmox",
-            "version": "1.0.3"
+            "version": "1.0.4"
         },
         "sysadm": {
             "author": "Jason Piszcyk",
@@ -77,7 +80,7 @@
             "email": "Jason@Piszcyk.com",
             "name": "sysadm",
             "repo_url": "git@github.com-StackStorm-Sysadm:JasonPiszcyk/StackStorm-Sysadm",
-            "version": "1.1.5"
+            "version": "1.1.6"
         },
         "winadmin": {
             "author": "Jason Piszcyk",
@@ -104,7 +107,7 @@
             "email": "Jason@Piszcyk.com",
             "name": "winadmin",
             "repo_url": "git@github.com-StackStorm-WinAdmin:JasonPiszcyk/StackStorm-WinAdmin",
-            "version": "0.0.7"
+            "version": "0.0.8"
         }
     }
 }

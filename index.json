@@ -1,9 +1,21 @@
 {
     "metadata": {
-        "generated_ts": 1683741091,
-        "hash": "4ea48360f0d83e78efaa8a65161775b5"
+        "generated_ts": 1686580145,
+        "hash": "2fbe0beff25e01c97e3b39f689e4f838"
     },
     "packs": {
+        "iocane": {
+            "author": "Jason Piszcyk",
+            "content": {
+                "count": 0,
+                "resources": []
+            },
+            "description": "Iocane StackStorm Pack",
+            "email": "Jason.Piszcyk@iocane.com.au",
+            "name": "iocane",
+            "repo_url": "git@github.com-StackStorm-Iocane:JasonPiszcyk/StackStorm-Iocane",
+            "version": "0.0.1"
+        },
         "nomad": {
             "author": "Jason Piszcyk",
             "content": {
@@ -53,7 +65,7 @@
             "email": "Jason@Piszcyk.com",
             "name": "proxmox",
             "repo_url": "git@github.com-StackStorm-Proxmox:JasonPiszcyk/StackStorm-Proxmox",
-            "version": "1.0.6"
+            "version": "1.0.7"
         },
         "sysadm": {
             "author": "Jason Piszcyk",

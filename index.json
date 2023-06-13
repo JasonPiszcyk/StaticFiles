@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1686641880,
-        "hash": "8c5d9536b0e99dc223ae9d1ef8e93018"
+        "generated_ts": 1686647758,
+        "hash": "5b8694031afe3c8bc39c2c6fe9fc88d4"
     },
     "packs": {
         "iocane": {
@@ -9,14 +9,14 @@
             "content": {
                 "count": 1,
                 "resources": [
-                    "stackstorm-enforce-environment"
+                    "stackstorm_enforce_environment"
                 ]
             },
             "description": "Iocane StackStorm Pack",
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocane",
             "repo_url": "git@github.com-StackStorm-Iocane:JasonPiszcyk/StackStorm-Iocane",
-            "version": "0.0.3"
+            "version": "0.0.4"
         },
         "nomad": {
             "author": "Jason Piszcyk",
@@ -77,7 +77,7 @@
                     "reboot_linux",
                     "create_zabbix_maintenance",
                     "unlock_hashicorp_vault",
-                    "stackstorm-enforce-environment",
+                    "stackstorm_enforce_environment",
                     "extract_zabbix_info",
                     "restart_services",
                     "update_linux_hosts",
@@ -95,7 +95,7 @@
             "email": "Jason@Piszcyk.com",
             "name": "sysadm",
             "repo_url": "git@github.com-StackStorm-Sysadm:JasonPiszcyk/StackStorm-Sysadm",
-            "version": "1.1.8"
+            "version": "1.1.9"
         },
         "winadmin": {
             "author": "Jason Piszcyk",

@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1691079808,
-        "hash": "e94f349a479640f1d1aa8eb4907905f7"
+        "generated_ts": 1691847620,
+        "hash": "bc3b10cc9d76273737ad8eeb1020ba12"
     },
     "packs": {
         "iocane": {
@@ -18,7 +18,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocane",
             "repo_url": "git@github.com-StackStorm-Iocane:JasonPiszcyk/StackStorm-Iocane",
-            "version": "0.1.0"
+            "version": "0.1.1"
         },
         "iocaneadmin": {
             "author": "Jason Piszcyk",
@@ -33,36 +33,43 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocaneadmin",
             "repo_url": "git@github.com-StackStorm-IocaneAdmin:JasonPiszcyk/StackStorm-IocaneAdmin",
-            "version": "0.1.0"
+            "version": "0.1.1"
         },
         "iocanerabbitmq": {
             "author": "Jason Piszcyk",
             "content": {
-                "count": 16,
+                "count": 23,
                 "resources": [
+                    "store_client_keys",
                     "add_shovel",
+                    "sign_message",
                     "delete_vhost",
+                    "generate_and_store_admin_keys",
                     "store_password",
                     "set_user_permissions",
                     "get_user",
                     "add_user",
+                    "verify_signature",
                     "list_users",
                     "send_message_to_queue",
                     "delete_shovel",
+                    "generate_client_keys",
                     "delete_user",
+                    "generate_uuid",
                     "delete_user_permissions",
                     "get_user_permissions",
                     "get_vhost",
                     "add_vhost",
                     "delete_password",
-                    "list_vhosts"
+                    "list_vhosts",
+                    "dispatch_message"
                 ]
             },
             "description": "Iocane RabbitMQ StackStorm Pack",
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocanerabbitmq",
             "repo_url": "git@github.com-StackStorm-IocaneRabbitMQ:JasonPiszcyk/StackStorm-IocaneRabbitMQ",
-            "version": "0.1.7"
+            "version": "0.1.8"
         },
         "nomad": {
             "author": "Jason Piszcyk",

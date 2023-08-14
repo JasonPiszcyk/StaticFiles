@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1691924908,
-        "hash": "1e40ffe175d3ee9ecd4014d1107fb9ef"
+        "generated_ts": 1692029934,
+        "hash": "a8b2d3640af7dfff29f86509e3fd1e56"
     },
     "packs": {
         "iocane": {
@@ -38,29 +38,31 @@
         "iocanerabbitmq": {
             "author": "Jason Piszcyk",
             "content": {
-                "count": 23,
+                "count": 25,
                 "resources": [
                     "store_client_keys",
                     "add_shovel",
                     "sign_message",
                     "delete_vhost",
                     "generate_and_store_admin_keys",
-                    "store_password",
                     "set_user_permissions",
+                    "add_ds_value",
                     "get_user",
                     "add_user",
                     "verify_signature",
                     "list_users",
                     "send_message_to_queue",
                     "delete_shovel",
+                    "delete_ds_value",
                     "generate_client_keys",
                     "delete_user",
                     "generate_uuid",
+                    "generate_rsa_keys",
                     "delete_user_permissions",
                     "get_user_permissions",
                     "get_vhost",
+                    "get_ds_value",
                     "add_vhost",
-                    "delete_password",
                     "list_vhosts",
                     "dispatch_message"
                 ]
@@ -69,7 +71,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocanerabbitmq",
             "repo_url": "git@github.com-StackStorm-IocaneRabbitMQ:JasonPiszcyk/StackStorm-IocaneRabbitMQ",
-            "version": "0.2.0"
+            "version": "0.2.1"
         },
         "nomad": {
             "author": "Jason Piszcyk",

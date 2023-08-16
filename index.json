@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1692108908,
-        "hash": "616eec51671d7ee6ee0223977ddfc976"
+        "generated_ts": 1692179449,
+        "hash": "f665dc2d4cc6bed86b98e61c9f3acfc8"
     },
     "packs": {
         "iocane": {
@@ -18,7 +18,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocane",
             "repo_url": "git@github.com-StackStorm-Iocane:JasonPiszcyk/StackStorm-Iocane",
-            "version": "0.1.2"
+            "version": "0.1.3"
         },
         "iocaneadmin": {
             "author": "Jason Piszcyk",
@@ -33,7 +33,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocaneadmin",
             "repo_url": "git@github.com-StackStorm-IocaneAdmin:JasonPiszcyk/StackStorm-IocaneAdmin",
-            "version": "0.1.2"
+            "version": "0.1.3"
         },
         "iocanerabbitmq": {
             "author": "Jason Piszcyk",
@@ -71,7 +71,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocanerabbitmq",
             "repo_url": "git@github.com-StackStorm-IocaneRabbitMQ:JasonPiszcyk/StackStorm-IocaneRabbitMQ",
-            "version": "0.2.2"
+            "version": "0.2.3"
         },
         "nomad": {
             "author": "Jason Piszcyk",

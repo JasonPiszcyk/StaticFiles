@@ -1,24 +1,25 @@
 {
     "metadata": {
-        "generated_ts": 1692282330,
-        "hash": "1e6f141bbc4698d586ad4b099a35d844"
+        "generated_ts": 1692290800,
+        "hash": "99e2f21bc16a247056d4e8384995eaee"
     },
     "packs": {
         "iocane": {
             "author": "Jason Piszcyk",
             "content": {
-                "count": 3,
+                "count": 4,
                 "resources": [
                     "stackstorm_enforce_environment",
                     "run_ansible_playbook",
-                    "ansible_create_inventory_string"
+                    "ansible_create_inventory_string",
+                    "run_playbook_from_remote"
                 ]
             },
             "description": "Iocane StackStorm Pack",
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocane",
             "repo_url": "git@github.com-StackStorm-Iocane:JasonPiszcyk/StackStorm-Iocane",
-            "version": "0.1.6"
+            "version": "0.1.7"
         },
         "iocaneadmin": {
             "author": "Jason Piszcyk",
@@ -34,7 +35,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocaneadmin",
             "repo_url": "git@github.com-StackStorm-IocaneAdmin:JasonPiszcyk/StackStorm-IocaneAdmin",
-            "version": "0.1.6"
+            "version": "0.1.7"
         },
         "iocanerabbitmq": {
             "author": "Jason Piszcyk",
@@ -72,7 +73,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocanerabbitmq",
             "repo_url": "git@github.com-StackStorm-IocaneRabbitMQ:JasonPiszcyk/StackStorm-IocaneRabbitMQ",
-            "version": "0.2.6"
+            "version": "0.2.7"
         },
         "nomad": {
             "author": "Jason Piszcyk",

@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1692544286,
-        "hash": "3e7c93858a55f76f675449bbabf05b67"
+        "generated_ts": 1692550506,
+        "hash": "3b5671ff09d9d521263a2b26eb8e0208"
     },
     "packs": {
         "iocane": {
@@ -43,19 +43,23 @@
         "iocanecore": {
             "author": "Jason Piszcyk",
             "content": {
-                "count": 0,
-                "resources": []
+                "count": 3,
+                "resources": [
+                    "add_ds_value",
+                    "delete_ds_value",
+                    "get_ds_value"
+                ]
             },
             "description": "Iocane Core StackStorm Pack",
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocanecore",
             "repo_url": "git@github.com-StackStorm-IocaneCore:JasonPiszcyk/StackStorm-IocaneCore",
-            "version": "0.1.0"
+            "version": "0.1.1"
         },
         "iocanerabbitmq": {
             "author": "Jason Piszcyk",
             "content": {
-                "count": 27,
+                "count": 24,
                 "resources": [
                     "add_shovel",
                     "sign_message",
@@ -64,14 +68,12 @@
                     "convert_from_json",
                     "generate_and_store_rsa_keys",
                     "set_user_permissions",
-                    "add_ds_value",
                     "get_user",
                     "add_user",
                     "verify_signature",
                     "list_users",
                     "send_message_to_queue",
                     "delete_shovel",
-                    "delete_ds_value",
                     "delete_user",
                     "generate_uuid",
                     "store_rsa_key",
@@ -80,7 +82,6 @@
                     "get_config_value",
                     "get_user_permissions",
                     "get_vhost",
-                    "get_ds_value",
                     "add_vhost",
                     "list_vhosts",
                     "dispatch_message"

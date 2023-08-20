@@ -23,7 +23,7 @@ import time
 #===============================================================================
 __BASE_DIR = "/Users/jp/GitHub"
 __PACK_INDEX_FILE = __BASE_DIR + "/StaticFiles/index.json"
-__PACK_SUBDIR_LIST = ["actions"]
+__PACK_SUBDIR_LIST = ["actions", "sensors", "rules"]
 # __GITHUB_URL_BASE = "https://github.com/JasonPiszcyk/"
 __GITHUB_URL_BASE = "git@github.com"
 __GITHUB_USER = "JasonPiszcyk"
@@ -70,6 +70,7 @@ for subdir_name in repo_subdir_list:
         }
 
         # Go through the sub directories of the pack
+        index_dict['packs'][pack_ref]['content'] = {}
         for resdir_name in __PACK_SUBDIR_LIST:
             # Get a list of yaml files in this dir
             resdir = subdir + "/" + resdir_name
@@ -81,15 +82,22 @@ for subdir_name in repo_subdir_list:
             for yaml_file in yaml_list:
                 if os.path.isfile(yaml_file):
                     with open(yaml_file, "r") as file:
-                        res_yaml = yaml.safe_load(file)
+                        try:
+                            res_yaml = yaml.safe_load(file)
+                        except:
+                            pass
                     
-                    resource_list.append(res_yaml["name"])
+                    if "name" in res_yaml:
+                        resource_list.append(res_yaml["name"])
+                    elif "class_name" in res_yaml:
+                        resource_list.append(res_yaml["class_name"])
                     
             # Add the resource info
-            index_dict['packs'][pack_ref]["content"] = {
-                'count': len(resource_list),
-                'resources': resource_list       
-            }
+            if len(resource_list) > 0:
+                index_dict['packs'][pack_ref]['content'][resdir_name] = {
+                        'count': len(resource_list),
+                        'resources': resource_list
+                    }       
 
 
 # Generate the timestamp/hash value

@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1692609617,
-        "hash": "2a324536aad92226356151583a49eedd"
+        "generated_ts": 1692609979,
+        "hash": "211eae995f18a3b0ecb67947aa8946af"
     },
     "packs": {
         "iocane": {
@@ -105,7 +105,7 @@
             "author": "Jason Piszcyk",
             "content": {
                 "actions": {
-                    "count": 11,
+                    "count": 12,
                     "resources": [
                         "sign_message",
                         "convert_to_json",
@@ -113,6 +113,7 @@
                         "generate_and_store_rsa_keys",
                         "add_ds_value",
                         "verify_signature",
+                        "run_jp_test",
                         "delete_ds_value",
                         "generate_uuid",
                         "store_rsa_key",
@@ -125,7 +126,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocaneshared",
             "repo_url": "git@github.com-StackStorm-IocaneShared:JasonPiszcyk/StackStorm-IocaneShared",
-            "version": "0.2.6"
+            "version": "0.2.7"
         },
         "nomad": {
             "author": "Jason Piszcyk",

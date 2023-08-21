@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1692569569,
-        "hash": "3277dfb673d064fe8d41c97e0205e5eb"
+        "generated_ts": 1692608098,
+        "hash": "8740505edc75dfb4071356200cbb2100"
     },
     "packs": {
         "iocane": {
@@ -70,32 +70,6 @@
             "repo_url": "git@github.com-StackStorm-IocaneAdmin:JasonPiszcyk/StackStorm-IocaneAdmin",
             "version": "0.2.2"
         },
-        "iocanecore": {
-            "author": "Jason Piszcyk",
-            "content": {
-                "actions": {
-                    "count": 11,
-                    "resources": [
-                        "sign_message",
-                        "convert_to_json",
-                        "convert_from_json",
-                        "generate_and_store_rsa_keys",
-                        "add_ds_value",
-                        "verify_signature",
-                        "delete_ds_value",
-                        "generate_uuid",
-                        "store_rsa_key",
-                        "generate_rsa_keys",
-                        "get_ds_value"
-                    ]
-                }
-            },
-            "description": "Iocane Core StackStorm Pack",
-            "email": "Jason.Piszcyk@iocane.com.au",
-            "name": "iocanecore",
-            "repo_url": "git@github.com-StackStorm-IocaneCore:JasonPiszcyk/StackStorm-IocaneCore",
-            "version": "0.2.4"
-        },
         "iocanerabbitmq": {
             "author": "Jason Piszcyk",
             "content": {
@@ -126,6 +100,32 @@
             "name": "iocanerabbitmq",
             "repo_url": "git@github.com-StackStorm-IocaneRabbitMQ:JasonPiszcyk/StackStorm-IocaneRabbitMQ",
             "version": "0.3.0"
+        },
+        "iocaneshared": {
+            "author": "Jason Piszcyk",
+            "content": {
+                "actions": {
+                    "count": 11,
+                    "resources": [
+                        "sign_message",
+                        "convert_to_json",
+                        "convert_from_json",
+                        "generate_and_store_rsa_keys",
+                        "add_ds_value",
+                        "verify_signature",
+                        "delete_ds_value",
+                        "generate_uuid",
+                        "store_rsa_key",
+                        "generate_rsa_keys",
+                        "get_ds_value"
+                    ]
+                }
+            },
+            "description": "Iocane Shared StackStorm Pack",
+            "email": "Jason.Piszcyk@iocane.com.au",
+            "name": "iocaneshared",
+            "repo_url": "git@github.com-StackStorm-IocaneShared:JasonPiszcyk/StackStorm-IocaneShared",
+            "version": "0.2.5"
         },
         "nomad": {
             "author": "Jason Piszcyk",

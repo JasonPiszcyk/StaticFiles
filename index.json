@@ -1,19 +1,20 @@
 {
     "metadata": {
-        "generated_ts": 1692722672,
-        "hash": "2d2efdd0ac14a4dbd9a27731d7e020f7"
+        "generated_ts": 1692787388,
+        "hash": "3230853b894af5f329311ce07d7fcc3c"
     },
     "packs": {
         "iocane": {
             "author": "Jason Piszcyk",
             "content": {
                 "actions": {
-                    "count": 4,
+                    "count": 5,
                     "resources": [
                         "stackstorm_enforce_environment",
                         "run_ansible_playbook",
                         "ansible_create_inventory_string",
-                        "run_playbook_from_remote"
+                        "run_playbook_from_remote",
+                        "test_ansible_host_connection"
                     ]
                 },
                 "rules": {
@@ -72,19 +73,23 @@
             "author": "Jason Piszcyk",
             "content": {
                 "actions": {
-                    "count": 12,
+                    "count": 16,
                     "resources": [
                         "sign_message",
                         "convert_to_json",
                         "convert_from_json",
                         "generate_and_store_rsa_keys",
+                        "delete_ansible_host_info",
                         "add_ds_value",
                         "verify_signature",
                         "delete_ds_value",
+                        "store_ansible_user_password",
+                        "set_ansible_host_info",
                         "generate_uuid",
                         "store_rsa_key",
                         "generate_rsa_keys",
                         "find_inquiry",
+                        "get_ansible_host_info",
                         "get_ds_value"
                     ]
                 }
@@ -93,7 +98,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocanecore",
             "repo_url": "git@github.com-StackStorm-IocaneCore:JasonPiszcyk/StackStorm-IocaneCore",
-            "version": "0.3.3"
+            "version": "0.3.4"
         },
         "iocanerabbitmq": {
             "author": "Jason Piszcyk",

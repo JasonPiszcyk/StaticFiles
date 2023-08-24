@@ -1,20 +1,24 @@
 {
     "metadata": {
-        "generated_ts": 1692787814,
-        "hash": "8c8d574a3db4d1c64a1358e1375c4662"
+        "generated_ts": 1692876793,
+        "hash": "bca9c10c2bc18c032fe04317e76d9330"
     },
     "packs": {
         "iocane": {
             "author": "Jason Piszcyk",
             "content": {
                 "actions": {
-                    "count": 5,
+                    "count": 9,
                     "resources": [
                         "stackstorm_enforce_environment",
+                        "delete_ansible_host_info",
                         "run_ansible_playbook",
                         "ansible_create_inventory_string",
                         "run_playbook_from_remote",
-                        "test_ansible_host_connection"
+                        "store_ansible_user_password",
+                        "set_ansible_host_info",
+                        "test_ansible_host_connection",
+                        "get_ansible_host_info"
                     ]
                 },
                 "rules": {
@@ -36,7 +40,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocane",
             "repo_url": "git@github.com-StackStorm-Iocane:JasonPiszcyk/StackStorm-Iocane",
-            "version": "0.3.2"
+            "version": "0.3.3"
         },
         "iocaneadmin": {
             "author": "Jason Piszcyk",
@@ -67,29 +71,25 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocaneadmin",
             "repo_url": "git@github.com-StackStorm-IocaneAdmin:JasonPiszcyk/StackStorm-IocaneAdmin",
-            "version": "0.3.4"
+            "version": "0.3.5"
         },
         "iocanecore": {
             "author": "Jason Piszcyk",
             "content": {
                 "actions": {
-                    "count": 16,
+                    "count": 12,
                     "resources": [
                         "sign_message",
                         "convert_to_json",
                         "convert_from_json",
                         "generate_and_store_rsa_keys",
-                        "delete_ansible_host_info",
                         "add_ds_value",
                         "verify_signature",
                         "delete_ds_value",
-                        "store_ansible_user_password",
-                        "set_ansible_host_info",
                         "generate_uuid",
                         "store_rsa_key",
                         "generate_rsa_keys",
                         "find_inquiry",
-                        "get_ansible_host_info",
                         "get_ds_value"
                     ]
                 }
@@ -98,7 +98,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocanecore",
             "repo_url": "git@github.com-StackStorm-IocaneCore:JasonPiszcyk/StackStorm-IocaneCore",
-            "version": "0.3.5"
+            "version": "0.3.7"
         },
         "iocanerabbitmq": {
             "author": "Jason Piszcyk",
@@ -128,7 +128,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocanerabbitmq",
             "repo_url": "git@github.com-StackStorm-IocaneRabbitMQ:JasonPiszcyk/StackStorm-IocaneRabbitMQ",
-            "version": "0.4.3"
+            "version": "0.4.4"
         },
         "nomad": {
             "author": "Jason Piszcyk",

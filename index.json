@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1692922317,
-        "hash": "c6e4cbcfd30d3d9a242c6b0eab5a5ff3"
+        "generated_ts": 1693035714,
+        "hash": "8ca9d31cf5ad4455a80f6e3c665c6ac3"
     },
     "packs": {
         "iocane": {
@@ -22,10 +22,11 @@
                     ]
                 },
                 "rules": {
-                    "count": 3,
+                    "count": 4,
                     "resources": [
                         "Iocane Notify",
                         "Run the script to enforce the StackStorm environment",
+                        "Test Ansible Host Connection Rule",
                         "Run Playbook from Remote Rule"
                     ]
                 },
@@ -40,7 +41,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocane",
             "repo_url": "git@github.com-StackStorm-Iocane:JasonPiszcyk/StackStorm-Iocane",
-            "version": "0.3.7"
+            "version": "0.3.8"
         },
         "iocaneadmin": {
             "author": "Jason Piszcyk",

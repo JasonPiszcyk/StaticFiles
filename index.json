@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1693404649,
-        "hash": "4b932e87bf799d61768ef1ff4be4a77c"
+        "generated_ts": 1693409206,
+        "hash": "eba397ea9bbf73d7476b4f24d20b3d2e"
     },
     "packs": {
         "iocane": {
@@ -41,7 +41,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocane",
             "repo_url": "git@github.com-StackStorm-Iocane:JasonPiszcyk/StackStorm-Iocane",
-            "version": "0.4.3"
+            "version": "0.4.4"
         },
         "iocaneadmin": {
             "author": "Jason Piszcyk",
@@ -73,7 +73,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocaneadmin",
             "repo_url": "git@github.com-StackStorm-IocaneAdmin:JasonPiszcyk/StackStorm-IocaneAdmin",
-            "version": "0.4.1"
+            "version": "0.4.2"
         },
         "iocanecore": {
             "author": "Jason Piszcyk",
@@ -234,7 +234,7 @@
             "email": "Jason@Piszcyk.com",
             "name": "sysadm",
             "repo_url": "git@github.com-StackStorm-Sysadm:JasonPiszcyk/StackStorm-Sysadm",
-            "version": "2.0.0"
+            "version": "2.0.1"
         },
         "winadmin": {
             "author": "Jason Piszcyk",

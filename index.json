@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1693140807,
-        "hash": "8852577154ebf866b96e30372250e781"
+        "generated_ts": 1693404649,
+        "hash": "4b932e87bf799d61768ef1ff4be4a77c"
     },
     "packs": {
         "iocane": {
@@ -41,17 +41,18 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocane",
             "repo_url": "git@github.com-StackStorm-Iocane:JasonPiszcyk/StackStorm-Iocane",
-            "version": "0.4.2"
+            "version": "0.4.3"
         },
         "iocaneadmin": {
             "author": "Jason Piszcyk",
             "content": {
                 "actions": {
-                    "count": 4,
+                    "count": 5,
                     "resources": [
                         "delete_customer_environment",
                         "process_task_response",
                         "create_customer_environment",
+                        "process_remote_task_output",
                         "remote_task_wrapper"
                     ]
                 },
@@ -72,7 +73,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocaneadmin",
             "repo_url": "git@github.com-StackStorm-IocaneAdmin:JasonPiszcyk/StackStorm-IocaneAdmin",
-            "version": "0.4.0"
+            "version": "0.4.1"
         },
         "iocanecore": {
             "author": "Jason Piszcyk",
@@ -192,26 +193,25 @@
                 "actions": {
                     "count": 14,
                     "resources": [
-                        "reboot_linux",
                         "create_zabbix_maintenance",
                         "unlock_hashicorp_vault",
+                        "apply_updates",
                         "extract_zabbix_info",
                         "restart_services",
-                        "update_linux_hosts",
-                        "is_reboot_required_linux",
                         "reboot_nomad_node",
                         "filter_zabbix_host_list",
                         "remove_zabbix_maintenance",
-                        "apply_updates_linux",
                         "update_proxmox_node",
                         "update_nomad_nodes",
-                        "fix_consul_raft_leader"
+                        "is_reboot_required",
+                        "fix_consul_raft_leader",
+                        "update_hosts",
+                        "reboot_host"
                     ]
                 },
                 "rules": {
                     "count": 15,
                     "resources": [
-                        "fix_consul_raft_leader",
                         "Zabbix - Restart Services",
                         "Backup VM - Quimby",
                         "Restart Chatops on Smithers",
@@ -220,6 +220,7 @@
                         "Backup VM Configs",
                         "Backup VM - Nelson",
                         "Set Bacula Timestamp",
+                        "Backup VM - Wiggum",
                         "Backup VM - Wiggum",
                         "Backup VM - Wiggum",
                         "SysAdm Notify",
@@ -233,7 +234,7 @@
             "email": "Jason@Piszcyk.com",
             "name": "sysadm",
             "repo_url": "git@github.com-StackStorm-Sysadm:JasonPiszcyk/StackStorm-Sysadm",
-            "version": "1.1.11"
+            "version": "2.0.0"
         },
         "winadmin": {
             "author": "Jason Piszcyk",
@@ -258,9 +259,8 @@
                     ]
                 },
                 "rules": {
-                    "count": 2,
+                    "count": 1,
                     "resources": [
-                        "get_config",
                         "WinAdmin Notify"
                     ]
                 }
@@ -269,7 +269,7 @@
             "email": "Jason@Piszcyk.com",
             "name": "winadmin",
             "repo_url": "git@github.com-StackStorm-WinAdmin:JasonPiszcyk/StackStorm-WinAdmin",
-            "version": "0.0.8"
+            "version": "0.0.9"
         }
     }
 }

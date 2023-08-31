@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1693484877,
-        "hash": "4838f7b0d2b5f3e4c91f56062245eff1"
+        "generated_ts": 1693485674,
+        "hash": "b3b43361e83331d2f3b5771a9b956553"
     },
     "packs": {
         "iocane": {
@@ -56,7 +56,7 @@
                         "process_remote_task_output",
                         "Is_Reboot_Required",
                         "remote_task_wrapper",
-                        "Reboot_host"
+                        "Reboot_Host"
                     ]
                 },
                 "rules": {
@@ -76,7 +76,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocaneadmin",
             "repo_url": "git@github.com-StackStorm-IocaneAdmin:JasonPiszcyk/StackStorm-IocaneAdmin",
-            "version": "0.4.5"
+            "version": "0.4.6"
         },
         "iocanecore": {
             "author": "Jason Piszcyk",

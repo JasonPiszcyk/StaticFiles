@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1693564458,
-        "hash": "86fcafc3e3a8f8cab326aacd16414bbb"
+        "generated_ts": 1693565299,
+        "hash": "f1ff75d4a49617c18527afcf283c55f9"
     },
     "packs": {
         "iocane": {
@@ -41,7 +41,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocane",
             "repo_url": "git@github.com-StackStorm-Iocane:JasonPiszcyk/StackStorm-Iocane",
-            "version": "0.4.9"
+            "version": "0.4.10"
         },
         "iocaneadmin": {
             "author": "Jason Piszcyk",
@@ -76,7 +76,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iocaneadmin",
             "repo_url": "git@github.com-StackStorm-IocaneAdmin:JasonPiszcyk/StackStorm-IocaneAdmin",
-            "version": "0.4.7"
+            "version": "0.4.8"
         },
         "iocanecore": {
             "author": "Jason Piszcyk",

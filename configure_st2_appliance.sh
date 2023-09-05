@@ -353,8 +353,8 @@ fi
 UpdateAPTCache
 
 # Make sure no docker packages were previusly installed
-if IsPackageInstalled "docker-ce" -o IsPackageInstalled "docker-ce-cli" -o IsPackageInstalled "containerd.io" -o 
-    IsPackageInstalled "docker-buildx-plugin" -o IsPackageInstalled "docker-compose-plugin"; then
+if IsPackageInstalled "docker-ce" || IsPackageInstalled "docker-ce-cli" || IsPackageInstalled "containerd.io" || 
+    IsPackageInstalled "docker-buildx-plugin" || IsPackageInstalled "docker-compose-plugin"; then
   Log "ERROR: Docker Packages already installed."
   exit 1
 else

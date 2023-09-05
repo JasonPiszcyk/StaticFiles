@@ -357,7 +357,7 @@ if IsPackageInstalled "docker-ce" || IsPackageInstalled "docker-ce-cli" || IsPac
     IsPackageInstalled "docker-buildx-plugin" || IsPackageInstalled "docker-compose-plugin"; then
   Log "ERROR: Docker Packages already installed."
   exit 1
-else
+fi
 
 InstallPackage docker-ce 
 InstallPackage docker-ce-cli 

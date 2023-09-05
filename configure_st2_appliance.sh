@@ -122,7 +122,7 @@ IsPackageInstalled()
 {
   package="${1}"
 
-  dpkg -l "${package}" > /dev/null 2>&1
+  dpkg -s "${package}" > /dev/null 2>&1
   [ $? -eq 0 ] && true || false
 }
 
@@ -228,6 +228,11 @@ else
   exit 1
 fi
 
+if [ "${NAME}" != "ubuntu" ]; then
+  Log "ERROR: This must be run on an Ubuntu OS"
+  exit 1
+fi
+
 pkg_arch=$(dpkg --print-architecture)
 if [ $? -ne 0 ]; then
   Log "ERROR: Unable to determine system architecture"
@@ -239,7 +244,7 @@ Log ""
 Log "Configuring ST2 appliance"
 Log "=========================="
 Log "OS Name: ${NAME}"
-Log "OS Verison: ${VERSION}"
+Log "OS Version: ${VERSION}"
 Log "OS Codename: ${VERSION_CODENAME}"
 Log "OS Package Architecture: ${pkg_arch}"
 Log ""

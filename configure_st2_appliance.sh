@@ -287,7 +287,6 @@ ApplyUpdates
 Log "Installing Required Packages"
 Log "-----------------------------"
 InstallPackage "ca-certificates"
-InstallPackage "curl"
 InstallPackage "gnupg"
 InstallPackage "ufw"
 
@@ -342,9 +341,10 @@ Log "Setting up Docker"
 InstallDockerGPG
 
 Log "Setting up Docker APT Repository"
-cat - << __EOF
+cat - << __EOF > ${DOCKER_APT_SRCLIST}
 deb [arch="${pkg_arch}" signed-by=${DOCKER_KEYRING}] ${DOCKER_APT_URL} ${VERSION_CODENAME} stable
-__EOF > ${DOCKER_APT_SRCLIST}
+__EOF
+
 if [ $? -ne 0 ]; then
   Log "ERROR: Problems setting up Docker APT repository"
   exit 1

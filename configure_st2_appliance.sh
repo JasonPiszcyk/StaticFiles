@@ -228,7 +228,7 @@ else
   exit 1
 fi
 
-if [ "${NAME}" != "ubuntu" ]; then
+if [ "${NAME}" != "Ubuntu" ]; then
   Log "ERROR: This must be run on an Ubuntu OS"
   exit 1
 fi

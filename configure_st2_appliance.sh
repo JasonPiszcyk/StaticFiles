@@ -22,6 +22,7 @@ PROG="configure_st2_appliance"
 LOGFILE=/tmp/${PROG}.log
 
 # File/Directory locations
+ISSUE=/etc/issue
 CLOUD_INIT_DISABLED=/etc/cloud/cloud-init.disabled
 KEYRING_DIR=/etc/apt/keyrings
 DATA_DIR=/data
@@ -71,6 +72,16 @@ __EOF
 Log()
 {
   echo -e "$*" | tee -a ${LOGFILE}
+}
+
+
+##############
+# CustomiseEtcIssue - Customise the login screen message
+##############
+CustomiseEtcIssue()
+{
+  echo "IP Address: \\4" >> ${ISSUE}
+  echo "" >> ${ISSUE}
 }
 
 
@@ -286,6 +297,9 @@ __EOF
   InstallPackage containerd.io 
   InstallPackage docker-buildx-plugin
   InstallPackage docker-compose-plugin
+  InstallPackage docker-compose
+
+  Log ""
 }
 
 
@@ -305,12 +319,13 @@ InstallStackStorm()
   fi
 
   # Clone the St2 Docker compose repository
-  cd ${DATA_DIR} && git clone https://github.com/stackstorm/st2-docker
+  cd ${DATA_DIR} && git clone https://github.com/stackstorm/st2-docker >> ${LOGFILE} 2>&1
   if [ $? -ne 0 ]; then
     Log "ERROR: Unable to clone StackStorm Docker GIT Repository"
     exit 1
   fi
 
+  Log ""
 }
 
 
@@ -387,6 +402,11 @@ Log "OS Package Architecture: ${pkg_arch}"
 Log ""
 
 #
+# Configure /etc/issue
+#
+CustomiseEtcIssue
+
+#
 # Disable cloud-init
 #
 DisableCloudInit
@@ -409,6 +429,7 @@ Log "Installing Required Packages"
 Log "-----------------------------"
 InstallPackage "ca-certificates"
 InstallPackage "gnupg"
+InstallPackage "crudini"
 InstallPackage "ufw"
 
 Log ""
@@ -436,4 +457,10 @@ ApplyUpdates
 AutoRemovePackages
 
 # All done
+Log ""
+Log "*************************************************************************"
+Log "* All Done! System should be rebooted to ensure all updates are applied *"
+Log "*************************************************************************"
+Log ""
+
 exit 0

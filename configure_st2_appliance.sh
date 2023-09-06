@@ -80,8 +80,12 @@ Log()
 ##############
 CustomiseEtcIssue()
 {
+  Log "Customising ${ISSUE}"
+
   echo "IP Address: \\4" >> ${ISSUE}
   echo "" >> ${ISSUE}
+
+  Log ""
 }
 
 

@@ -24,6 +24,7 @@ LOGFILE=/tmp/${PROG}.log
 # File/Directory locations
 CLOUD_INIT_DISABLED=/etc/cloud/cloud-init.disabled
 KEYRING_DIR=/etc/apt/keyrings
+DATA_DIR=/data
 
 # Docker Info
 DOCKER_KEYRING=${KEYRING_DIR}/docker.gpg
@@ -31,10 +32,14 @@ DOCKER_APT_URL=https://download.docker.com/linux/ubuntu
 DOCKER_GPG_URL=${DOCKER_APT_URL}/gpg
 DOCKER_APT_SRCLIST=/etc/apt/sources.list.d/docker.list
 
+# StackStorm Info
+ST2_DOCKER_COMPOSE_DIR=${DATA_DIR}/st2-docker
+
+
 
 #############################################################################
 #
-# Processing and Validation Functions
+# Functions
 #
 #############################################################################
 
@@ -151,10 +156,90 @@ InstallPackage()
 
 
 ##############
-# InstallDockerGPG - Install the docker GPG key
+# DisableCloudInit - Disable Cloud Init
 ##############
-InstallDockerGPG()
+DisableCloudInit()
 {
+  Log "Disabling cloud-init"
+  touch ${CLOUD_INIT_DISABLED} >> ${LOGFILE} 2>&1
+  if [ $? -ne 0 ]; then
+    Log "ERROR: Unable to create file: ${CLOUD_INIT_DISABLED}"
+    exit 1
+  else
+    Log ""
+  fi
+}
+
+
+##############
+# PurgeSnaps - Disable and Purge SNAPS
+##############
+PurgeSnaps()
+{
+  Log "Purging any existing snaps"
+  apt purge snapd -y >> ${LOGFILE} 2>&1
+  if [ $? -ne 0 ]; then
+    Log "ERROR: Unable to purge snaps"
+    exit 1
+  else
+    Log ""
+  fi
+}
+
+
+##############
+# ConfigureFirewall - Configure the firewall
+##############
+ConfigureFirewall()
+{
+  Log "Setting up basic firewall"
+
+  ufw default deny incoming >> ${LOGFILE} 2>&1
+  if [ $? -ne 0 ]; then
+    Log "ERROR: Unable to set default UFW policy: Incoming"
+    exit 1
+  fi
+
+  ufw default allow outgoing >> ${LOGFILE} 2>&1
+  if [ $? -ne 0 ]; then
+    Log "ERROR: Unable to set default UFW policy: Outgoing"
+    exit 1
+  fi
+
+  ufw allow ssh >> ${LOGFILE} 2>&1
+  if [ $? -ne 0 ]; then
+    Log "ERROR: Unable to set allow SSH incoming in UFW"
+    exit 1
+  else
+    Log ""
+  fi
+
+  ufw disable && ufw --force enable >> ${LOGFILE} 2>&1
+  if [ $? -ne 0 ]; then
+    Log "ERROR: Unable to restart UFW"
+    exit 1
+  else
+    Log ""
+  fi
+
+  ufw status verbose >> ${LOGFILE} 2>&1
+  if [ $? -ne 0 ]; then
+    Log "ERROR: Unable to get UFW status"
+    exit 1
+  fi
+  ufw status verbose
+  Log ""
+}
+
+
+##############
+# InstallDocker - Install Docker
+##############
+InstallDocker()
+{
+  Log "Setting up Docker"
+
+  # Set up Docker GPG Key
   Log "Setting up Docker GPG Key"
 
   install -m 0755 -d ${KEYRING_DIR} >> ${LOGFILE} 2>&1
@@ -174,6 +259,58 @@ InstallDockerGPG()
     Log "ERROR: Unable to create GPG key directory"
     exit 1
   fi
+
+  # Set up APT repository
+  Log "Setting up Docker APT Repository"
+  cat - << __EOF > ${DOCKER_APT_SRCLIST}
+deb [arch="${pkg_arch}" signed-by=${DOCKER_KEYRING}] ${DOCKER_APT_URL} ${VERSION_CODENAME} stable
+__EOF
+
+  if [ $? -ne 0 ]; then
+    Log "ERROR: Problems setting up Docker APT repository"
+    exit 1
+  fi
+
+  UpdateAPTCache
+
+  # Make sure no docker packages were previusly installed
+  if IsPackageInstalled "docker-ce" || IsPackageInstalled "docker-ce-cli" || IsPackageInstalled "containerd.io" || 
+      IsPackageInstalled "docker-buildx-plugin" || IsPackageInstalled "docker-compose-plugin"; then
+    Log "ERROR: Docker Packages already installed."
+    exit 1
+  fi
+
+  # Install the packages
+  InstallPackage docker-ce 
+  InstallPackage docker-ce-cli 
+  InstallPackage containerd.io 
+  InstallPackage docker-buildx-plugin
+  InstallPackage docker-compose-plugin
+}
+
+
+##############
+# InstallStackStorm - Install StackStorm
+##############
+InstallStackStorm()
+{
+  Log "Installing StackStorm"
+
+  # Create the data directory
+  Log "Installing StackStorm Docker Compose Files"
+  install -m 0755 -d ${DATA_DIR} >> ${LOGFILE} 2>&1
+  if [ $? -ne 0 ]; then
+    Log "ERROR: Unable to create Data directory"
+    exit 1
+  fi
+
+  # Clone the St2 Docker compose repository
+  cd ${DATA_DIR} && git clone https://github.com/stackstorm/st2-docker
+  if [ $? -ne 0 ]; then
+    Log "ERROR: Unable to clone StackStorm Docker GIT Repository"
+    exit 1
+  fi
+
 }
 
 
@@ -239,7 +376,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-
+# Put some info in the Log file...
 Log ""
 Log "Configuring ST2 appliance"
 Log "=========================="
@@ -252,27 +389,12 @@ Log ""
 #
 # Disable cloud-init
 #
-Log "Disabling cloud-init"
-touch ${CLOUD_INIT_DISABLED} >> ${LOGFILE} 2>&1
-if [ $? -ne 0 ]; then
-  Log "ERROR: Unable to create file: ${CLOUD_INIT_DISABLED}"
-  exit 1
-else
-  Log ""
-fi
+DisableCloudInit
 
 #
 # Disable and purge snaps
 #
-Log "Purging any existing snaps"
-apt purge snapd -y >> ${LOGFILE} 2>&1
-if [ $? -ne 0 ]; then
-  Log "ERROR: Unable to purge snaps"
-  exit 1
-else
-  Log ""
-fi
-
+PurgeSnaps
 
 #
 # Apply any outstanding updates
@@ -280,9 +402,8 @@ fi
 UpdateAPTCache
 ApplyUpdates
 
-
 #
-# Install packages we need
+# Make sure the packages we need are installed
 #
 Log "Installing Required Packages"
 Log "-----------------------------"
@@ -295,76 +416,17 @@ Log ""
 #
 # Set up firewall
 #
-Log "Setting up basic firewall"
-
-ufw default deny incoming >> ${LOGFILE} 2>&1
-if [ $? -ne 0 ]; then
-  Log "ERROR: Unable to set default UFW policy: Incoming"
-  exit 1
-fi
-
-ufw default allow outgoing >> ${LOGFILE} 2>&1
-if [ $? -ne 0 ]; then
-  Log "ERROR: Unable to set default UFW policy: Outgoing"
-  exit 1
-fi
-
-ufw allow ssh >> ${LOGFILE} 2>&1
-if [ $? -ne 0 ]; then
-  Log "ERROR: Unable to set allow SSH incoming in UFW"
-  exit 1
-else
-  Log ""
-fi
-
-ufw disable && ufw --force enable >> ${LOGFILE} 2>&1
-if [ $? -ne 0 ]; then
-  Log "ERROR: Unable to restart UFW"
-  exit 1
-else
-  Log ""
-fi
-
-ufw status verbose >> ${LOGFILE} 2>&1
-if [ $? -ne 0 ]; then
-  Log "ERROR: Unable to get UFW status"
-  exit 1
-fi
-ufw status verbose
-Log ""
-
+ConfigureFirewall
 
 #
 # Install Docker
 #
-Log "Setting up Docker"
-InstallDockerGPG
+InstallDocker
 
-Log "Setting up Docker APT Repository"
-cat - << __EOF > ${DOCKER_APT_SRCLIST}
-deb [arch="${pkg_arch}" signed-by=${DOCKER_KEYRING}] ${DOCKER_APT_URL} ${VERSION_CODENAME} stable
-__EOF
-
-if [ $? -ne 0 ]; then
-  Log "ERROR: Problems setting up Docker APT repository"
-  exit 1
-fi
-
-UpdateAPTCache
-
-# Make sure no docker packages were previusly installed
-if IsPackageInstalled "docker-ce" || IsPackageInstalled "docker-ce-cli" || IsPackageInstalled "containerd.io" || 
-    IsPackageInstalled "docker-buildx-plugin" || IsPackageInstalled "docker-compose-plugin"; then
-  Log "ERROR: Docker Packages already installed."
-  exit 1
-fi
-
-InstallPackage docker-ce 
-InstallPackage docker-ce-cli 
-InstallPackage containerd.io 
-InstallPackage docker-buildx-plugin
-InstallPackage docker-compose-plugin
-
+#
+# Install StackStorm
+#
+InstallStackStorm
 
 #
 # Apply any outstanding updates and remove unused packages

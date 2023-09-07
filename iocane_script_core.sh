@@ -19,7 +19,7 @@ PROG=${PROG:-$(basename $0)}
 LOGFILE=/tmp/${PROG}.log
 ISSUE=/etc/issue
 CLOUD_INIT_DISABLED=/etc/cloud/cloud-init.disabled
-KEYRING_DIR=/etc/apt/keyrings
+KEYRING_DIR=/usr/share/keyrings
 DATA_DIR=/data
 
 # Date Info

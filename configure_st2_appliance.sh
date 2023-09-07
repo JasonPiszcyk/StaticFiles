@@ -166,9 +166,9 @@ ConfigureFirewall()
 
 
 ##############
-# InstallMongo - Install MongoDB
+# InstallMongoDB - Install MongoDB
 ##############
-InstallMongo()
+InstallMongoDB()
 {
   Log -t "Installing MongoDB"
 

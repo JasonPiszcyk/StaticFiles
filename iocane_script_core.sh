@@ -23,7 +23,7 @@ KEYRING_DIR=/etc/apt/keyrings
 DATA_DIR=/data
 
 # Date Info
-CUR_DATE=$(${DATE} +"%d/%m/%Y")
+CUR_DATE=$(date +"%d/%m/%Y")
 
 # Hostname
 CUR_HOST=$(hostname)

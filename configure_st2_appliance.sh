@@ -253,12 +253,12 @@ PurgeSnaps
 # Apply any outstanding updates
 #
 Log -t "Applying Updates"
-if ! UpdateAPTCache ; then
+if ! UpdateAPTCache >> ${LOGFILE} 2>&1 ; then
   Log -t "ERROR: Unable to update APT cache"
   exit 1
 fi
   
-if ! ApplyUpdates ; then
+if ! ApplyUpdates >> ${LOGFILE} 2>&1 ; then
   Log "ERROR: Unable to apply updates"
   exit 1
 fi
@@ -268,7 +268,7 @@ fi
 #
 Log -t "Installing Required Packages"
 Log -t "-----------------------------"
-if ! InstallPackage ca-certificates gnupg crudini ufw ; then
+if ! InstallPackages ca-certificates gnupg crudini ufw ; then
   Log -t "ERROR: A problem occurred when installed required packages"
   exit 1
 fi
@@ -289,17 +289,17 @@ InstallStackStorm
 # Apply any outstanding updates and remove unused packages
 #
 Log -t "Applying Updates and autoremoving unused packages"
-if ! UpdateAPTCache ; then
+if ! UpdateAPTCache >> ${LOGFILE} 2>&1 ; then
   Log -t "ERROR: Unable to update APT cache"
   exit 1
 fi
   
-if ! ApplyUpdates ; then
+if ! ApplyUpdates >> ${LOGFILE} 2>&1 ; then
   Log "ERROR: Unable to apply updates"
   exit 1
 fi
 
-if ! AutoRemovePackages ; then
+if ! AutoRemovePackages >> ${LOGFILE} 2>&1 ; then
   Log "ERROR: Unable to automatically remove unused packages"
   exit 1
 fi

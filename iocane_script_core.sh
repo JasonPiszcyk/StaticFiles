@@ -86,7 +86,7 @@ RemoveFile()
 ##############
 UpdateAPTCache()
 {
-  apt-get update
+  apt-get -q update
 }
 
 
@@ -95,7 +95,7 @@ UpdateAPTCache()
 ##############
 ApplyUpdates()
 {
-  apt-get -y upgrade
+  apt-get -q -y upgrade
 }
 
 
@@ -104,7 +104,7 @@ ApplyUpdates()
 ##############
 AutoRemovePackages()
 {
-  apt -y autoremove
+  apt-get -q -y autoremove
 }
 
 
@@ -132,5 +132,5 @@ InstallPackages()
 {
   package_list=$*
 
-  apt-get -y install ${package_list}
+  apt-get -q -y install ${package_list}
 }

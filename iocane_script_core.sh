@@ -12,6 +12,19 @@
 # Copyright (c) 2023 Iocane Pty Ltd
 #
 
+
+#
+# Notes on functions in this file
+#
+# Most functions implement code to redirect output to logfile if desired.
+# The following statements will apear in most functions...
+#   Save STDOUT to file descriptor 3, STDERR to file descriptor 4
+#     exec 3>&1 4>&2
+#
+#   Restore STDOUT and STDERR to state saved previously
+#     exec 1>&3 2>&4
+#      
+
 # Standard Environment variables
 PROG=${PROG:-$(basename $0)}
 
@@ -39,23 +52,31 @@ CUR_HOST=$(hostname)
 ##############
 Log()
 {
-  if [ "$1" = "-c" ]; then
-    RemoveFile ${LOGFILE}
-    echo -n "" > ${LOGFILE}
-    shift
-  fi
+  while [ $# -gt 0 ]; do
+    case "${1}" in
+      -c)       # Clear the log file
+        RemoveFile ${LOGFILE}
+        echo -n "" > ${LOGFILE}
+        shift
+        ;;
 
-  if [ "$1" = "-d" ]; then
-    echo -n "$(date +"%H:%M:%S %d/%m/%Y"): " >> ${LOGFILE}
-    shift
-  fi
+      -d)       # Display a date/timestamp prefix
+        echo -n "$(date +"%H:%M:%S %d/%m/%Y"): " &>> ${LOGFILE}
+        shift
+        ;;
 
-  if [ "$1" = "-t" ]; then
-    shift
-    echo "$*"
-  fi
+      -t)       # Display output the terminal
+        shift
+        echo -e "$*"
+        ;;
 
-  echo "$*" >> ${LOGFILE}
+      *)        # End of parameters
+        break
+        ;;
+    esac
+  done
+
+  echo -e "$*" &>> ${LOGFILE}
 }
 
 
@@ -75,7 +96,6 @@ RemoveFile()
 }
 
 
-
 #############################################################################
 #
 # Package Management Functions
@@ -86,7 +106,44 @@ RemoveFile()
 ##############
 UpdateAPTCache()
 {
+  rc=false
+  log_args=""
+
+  exec 3>&1 4>&2
+
+  while [ $# -gt 0 ]; do
+    case "${1}" in
+      -l)       # Send output to logfile rather than terminal
+        exec &>> ${LOGFILE}
+        shift
+        ;;
+
+      -t)       # If we call Log, send output to both log and terminal
+        log_args="${log_args} -t"
+        shift
+        ;;
+
+      -d)       # If we call Log, display a date/timestamp prefix
+        log_args="${log_args} -d"
+        shift
+        ;;
+
+      *)        # End of parameters
+        break
+        ;;
+    esac
+  done
+
   apt-get -q update
+  if [ $? - ne 0 ]; then
+    exec 1>&3 2>&4
+    Log ${log_args} "ERROR: Unable to update APT cache"
+  else
+    exec 1>&3 2>&4
+    rc=true
+  fi
+
+  ${rc}
 }
 
 
@@ -95,7 +152,44 @@ UpdateAPTCache()
 ##############
 ApplyUpdates()
 {
+  rc=false
+  log_args=""
+
+  exec 3>&1 4>&2
+
+  while [ $# -gt 0 ]; do
+    case "${1}" in
+      -l)       # Send output to logfile rather than terminal
+        exec &>> ${LOGFILE}
+        shift
+        ;;
+
+      -t)       # If we call Log, send output to both log and terminal
+        log_args="${log_args} -t"
+        shift
+        ;;
+
+      -d)       # If we call Log, display a date/timestamp prefix
+        log_args="${log_args} -d"
+        shift
+        ;;
+
+      *)        # End of parameters
+        break
+        ;;
+    esac
+  done
+
   apt-get -q -y upgrade
+  if [ $? - ne 0 ]; then
+    exec 1>&3 2>&4
+    Log ${log_args} "ERROR: Unable to apply updates"
+  else
+    exec 1>&3 2>&4
+    rc=true
+  fi
+
+  ${rc}
 }
 
 
@@ -104,7 +198,44 @@ ApplyUpdates()
 ##############
 AutoRemovePackages()
 {
+  rc=false
+  log_args=""
+
+  exec 3>&1 4>&2
+
+  while [ $# -gt 0 ]; do
+    case "${1}" in
+      -l)       # Send output to logfile rather than terminal
+        exec &>> ${LOGFILE}
+        shift
+        ;;
+
+      -t)       # If we call Log, send output to both log and terminal
+        log_args="${log_args} -t"
+        shift
+        ;;
+
+      -d)       # If we call Log, display a date/timestamp prefix
+        log_args="${log_args} -d"
+        shift
+        ;;
+
+      *)        # End of parameters
+        break
+        ;;
+    esac
+  done
+
   apt-get -q -y autoremove
+  if [ $? - ne 0 ]; then
+    exec 1>&3 2>&4
+    Log ${log_args} "ERROR: Unable to automatically remove unused packages"
+  else
+    exec 1>&3 2>&4
+    rc=true
+  fi
+
+  ${rc}
 }
 
 
@@ -130,7 +261,95 @@ IsPackageInstalled()
 ##############
 InstallPackages()
 {
+  rc=false
+  log_args=""
+
+  exec 3>&1 4>&2
+
+  while [ $# -gt 0 ]; do
+    case "${1}" in
+      -l)       # Send output to logfile rather than terminal
+        exec &>> ${LOGFILE}
+        shift
+        ;;
+
+      -t)       # If we call Log, send output to both log and terminal
+        log_args="${log_args} -t"
+        shift
+        ;;
+
+      -d)       # If we call Log, display a date/timestamp prefix
+        log_args="${log_args} -d"
+        shift
+        ;;
+
+      *)        # End of parameters
+        break
+        ;;
+    esac
+  done
+
   package_list=$*
 
   apt-get -q -y install ${package_list}
+  if [ $? - ne 0 ]; then
+    exec 1>&3 2>&4
+    Log ${log_args} "ERROR: A problem occurred when trying to install packages:"
+    Log ${log_args} "ERROR: Package List: >${package_list}<"
+  else
+    exec 1>&3 2>&4
+    rc=true
+  fi
+
+  ${rc}
+}
+
+##############
+# Get_APT_GPG_Key - Get and store the APT GPG key for a package
+##############
+Get_APT_GPG_Key()
+{
+  rc=false
+  log_args=""
+
+  exec 3>&1 4>&2
+
+  while [ $# -gt 0 ]; do
+    case "${1}" in
+      -l)       # Send output to logfile rather than terminal
+        exec &>> ${LOGFILE}
+        shift
+        ;;
+
+      -t)       # If we call Log, send output to both log and terminal
+        log_args="${log_args} -t"
+        shift
+        ;;
+
+      -d)       # If we call Log, display a date/timestamp prefix
+        log_args="${log_args} -d"
+        shift
+        ;;
+
+      *)        # End of parameters
+        break
+        ;;
+    esac
+  done
+
+  gpg_key_url="${1}"
+  gpg_key_ring="${2}"
+
+  curl -1sLf "${gpg_key_url}" | gpg --dearmor -o ${gpg_key_ring}
+  if [ $? - ne 0 ]; then
+    exec 1>&3 2>&4
+    Log ${log_args} "ERROR: Unable to download and store GPG key."
+    Log ${log_args} "ERROR: URL: >${gpg_key_url}<"
+    Log ${log_args} "ERROR: Keyring: >${gpg_key_ring}<"
+  else
+    exec 1>&3 2>&4
+    rc=true
+  fi
+
+  ${rc}
 }

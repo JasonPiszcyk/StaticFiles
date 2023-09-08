@@ -26,6 +26,7 @@ source <(curl -sSL https://raw.githubusercontent.com/JasonPiszcyk/StaticFiles/ma
 # MongoDB Info
 MONGO_KEY_URL=https://www.mongodb.org/static/pgp/server-4.4.asc
 MONGO_APT_URL=http://repo.mongodb.org/apt/ubuntu
+MONGO_KEYRING=${KEYRING_DIR}/mongodb-keyring.gpg
 MONGO_APT_SRCLIST=/etc/apt/sources.list.d/mongodb-org-4.4.list
 
 # RAbbitMQ Info
@@ -44,14 +45,17 @@ RMQ_APT_SRCLIST=/etc/apt/sources.list.d/rabbitmq.list
 
 
 # StackStorm Info
+ST2_KEY_URL=https://packagecloud.io/StackStorm/stable/gpgkey
+ST2_APT_URL=https://packagecloud.io/StackStorm/stable/ubuntu
+ST2_KEYRING=${KEYRING_DIR}/StackStorm_stable-archive-keyring.gpg
+ST2_APT_SRCLIST=/etc/apt/sources.list.d/StackStorm_stable.list
 
 
 #############################################################################
 #
-# Functions
+# Util Functions - Functions used throughout script
 #
 #############################################################################
-
 ##############
 # Usage - Display the Usage then exit...
 ##############
@@ -74,6 +78,13 @@ __EOF
 }
 
 
+
+
+#############################################################################
+#
+# Process Functions - Functions used to perform a task such as an install
+#
+#############################################################################
 ##############
 # CustomiseEtcIssue - Customise the login screen message
 ##############
@@ -127,18 +138,21 @@ ConfigureFirewall()
 {
   Log -t "Setting up basic firewall"
 
+  Log "\nUFW: Set default incoming policy"
   ufw default deny incoming >> ${LOGFILE} 2>&1
   if [ $? -ne 0 ]; then
     Log -t "ERROR: Unable to set default UFW policy: Incoming"
     exit 1
   fi
 
+  Log "\nUFW: Set default outgoing policy"
   ufw default allow outgoing >> ${LOGFILE} 2>&1
   if [ $? -ne 0 ]; then
     Log -t "ERROR: Unable to set default UFW policy: Outgoing"
     exit 1
   fi
 
+  Log "\nUFW: Allow SSH"
   ufw allow ssh >> ${LOGFILE} 2>&1
   if [ $? -ne 0 ]; then
     Log -t "ERROR: Unable to set allow SSH incoming in UFW"
@@ -147,6 +161,7 @@ ConfigureFirewall()
     Log -t ""
   fi
 
+  Log "\nUFW: Restart"
   ufw disable && ufw --force enable >> ${LOGFILE} 2>&1
   if [ $? -ne 0 ]; then
     Log -t "ERROR: Unable to restart UFW"
@@ -155,6 +170,7 @@ ConfigureFirewall()
     Log -t ""
   fi
 
+  Log "\nUFW: Show status"
   ufw status verbose >> ${LOGFILE} 2>&1
   if [ $? -ne 0 ]; then
     Log -t "ERROR: Unable to get UFW status"
@@ -172,24 +188,28 @@ InstallMongoDB()
 {
   Log -t "Installing MongoDB"
 
-  curl -fsSL ${MONGO_KEY_URL} | apt-key add - >> ${LOGFILE} 2>&1
+  Log "\nMongoDB: Downloading APT Key"
+  Get_APT_GPG_Key -l -t ${MONGO_KEY_URL} ${MONGO_KEYRING} || exit 1
 
+  Log "\nMongoDB: Configuring APT Repo"
   cat - << __EOF > ${MONGO_APT_SRCLIST}
-deb ${MONGO_APT_URL} ${VERSION_CODENAME}/mongodb-org/4.4 multiverse
+deb [signed-by=${MONGO_KEYRING}] ${MONGO_APT_URL} ${VERSION_CODENAME}/mongodb-org/4.4 multiverse
 __EOF
 
-  if ! UpdateAPTCache >> ${LOGFILE} 2>&1 ; then
-    Log -t "ERROR: Unable to update APT cache"
-    exit 1
-  fi
+  UpdateAPTCache -l -t || exit 1
 
-  if ! InstallPackages mongodb-org >> ${LOGFILE} 2>&1 ; then
-    Log -t "ERROR: Unable to install Mongo DB Packages"
-    exit 1
-  fi
+  Log "\nMongoDB: Installing Packages"
+  InstallPackages -l -t mongodb-org || exit 1
 
+  Log "\nMongoDB: Setting start at boot"
   if ! systemctl enable mongod >> ${LOGFILE} 2>&1 ; then
     Log -t "ERROR: Unable to set Mongo DB to run at startup"
+    exit 1
+  fi
+
+  Log "\nMongoDB: Starting"
+  if ! systemctl start mongod >> ${LOGFILE} 2>&1 ; then
+    Log -t "ERROR: Unable start Mongo DB"
     exit 1
   fi
 
@@ -204,11 +224,12 @@ InstallRabbitMQ()
 {
   Log -t "Installing RabbitMQ"
 
-  curl -1sLf "${RMQ_TEAM_KEY_URL}" | gpg --dearmor -o ${RMQ_TEAM_KEYRING} >> ${LOGFILE} 2>&1
-  curl -1sLf "${ERLANG_KEY_URL}" | gpg --dearmor -o ${ERLANG_KEYRING} >> ${LOGFILE} 2>&1
-  curl -1sLf "${RMQ_KEY_URL}" | gpg --dearmor -o ${RMQ_KEYRING} >> ${LOGFILE} 2>&1
+  Log "\nRabbitMQ: Downloading APT Keys"
+  Get_APT_GPG_Key -l -t ${RMQ_TEAM_KEY_URL} ${RMQ_TEAM_KEYRING} || exit 1
+  Get_APT_GPG_Key -l -t ${ERLANG_KEY_URL} ${ERLANG_KEYRING} || exit 1
+  Get_APT_GPG_Key -l -t ${RMQ_KEY_URL} ${RMQ_KEYRING} || exit 1
 
-
+  Log "\nRabbitMQ: Configuring APT Repos"
   cat - << __EOF > ${RMQ_APT_SRCLIST}
 ## Provides modern Erlang/OTP releases
 ##
@@ -221,28 +242,16 @@ deb [signed-by=${RMQ_KEYRING}] ${RMQ_APT_URL} ${VERSION_CODENAME} main
 deb-src [signed-by=${RMQ_KEYRING}] ${RMQ_APT_URL} ${VERSION_CODENAME} main
 __EOF
 
-  if ! UpdateAPTCache >> ${LOGFILE} 2>&1 ; then
-    Log -t "ERROR: Unable to update APT cache"
-    exit 1
-  fi
+  UpdateAPTCache -l -t || exit 1
 
-  if ! InstallPackages erlang-base erlang-asn1 erlang-crypto erlang-eldap erlang-ftp \
+  Log "\nRabbitMQ: Installing Packages"
+  InstallPackages -l -t erlang-base erlang-asn1 erlang-crypto erlang-eldap erlang-ftp \
         erlang-inets erlang-mnesia erlang-os-mon erlang-parsetools erlang-public-key \
         erlang-runtime-tools erlang-snmp erlang-ssl erlang-syntax-tools erlang-tftp \
-        erlang-tools erlang-xmerl >> ${LOGFILE} 2>&1 ; then
-    Log -t "ERROR: Unable to install Rabbit MQ Packages"
-    exit 1
-  fi
+        erlang-tools erlang-xmerl || exit 1
 
-  if ! InstallPackages rabbitmq-server --fix-missing >> ${LOGFILE} 2>&1 ; then
-    Log -t "ERROR: Unable to install Rabbit MQ Server Package"
-    exit 1
-  fi
-
-  if ! InstallPackages redis-server >> ${LOGFILE} 2>&1 ; then
-    Log -t "ERROR: Unable to install Redis Server Package"
-    exit 1
-  fi
+  InstallPackages -l -t rabbitmq-server --fix-missing || exit 1
+  InstallPackages -l -t redis-server || exit 1
 
   Log -t ""
 }
@@ -255,13 +264,22 @@ InstallStackStorm()
 {
   Log -t "Installing StackStorm"
 
-  # Create the data directory
-  Log -t "Installing StackStorm Docker Compose Files"
-  install -m 0755 -d ${DATA_DIR} >> ${LOGFILE} 2>&1
-  if [ $? -ne 0 ]; then
-    Log -t "ERROR: Unable to create Data directory"
-    exit 1
-  fi
+  Log "\nStackStorm: Downloading APT Key"
+  Get_APT_GPG_Key -l -t ${ST2_KEY_URL} ${ST2_KEYRING} || exit 1
+
+  Log "\nStackStorm: Configuring APT Repo"
+  cat - << __EOF > ${ST2_APT_SRCLIST}
+deb [signed-by=${ST2_KEYRING}] ${ST2_APT_URL} ${VERSION_CODENAME} main
+deb-src [signed-by=${ST2_KEYRING}] ${ST2_APT_URL} ${VERSION_CODENAME} main
+__EOF
+
+  UpdateAPTCache -l -t || exit 1
+
+  Log "\nStackStorm: Installing Packages"
+  InstallPackages -l -t st2 st2web nginx libldap2-dev libsasl2-dev ldap-utils || exit 1
+  InstallPackages -l -t gcc libkrb5-dev || exit 1
+
+  Log -t ""
 }
 
 
@@ -356,26 +374,15 @@ PurgeSnaps
 # Apply any outstanding updates
 #
 Log -t "Applying Updates"
-if ! UpdateAPTCache >> ${LOGFILE} 2>&1 ; then
-  Log -t "ERROR: Unable to update APT cache"
-  exit 1
-fi
-  
-if ! ApplyUpdates >> ${LOGFILE} 2>&1 ; then
-  Log "ERROR: Unable to apply updates"
-  exit 1
-fi
+UpdateAPTCache -l -t || exit 1
+ApplyUpdates -l -t || exit 1
 
 #
 # Make sure the packages we need are installed
 #
 Log -t "Installing Required Packages"
 Log -t "-----------------------------"
-if ! InstallPackages ca-certificates gnupg crudini ufw >> ${LOGFILE} 2>&1 ; then
-  Log -t "ERROR: A problem occurred when installed required packages"
-  exit 1
-fi
-
+InstallPackages -l -t ca-certificates gnupg crudini ufw || exit 1
 Log -t ""
 
 #
@@ -402,20 +409,9 @@ InstallStackStorm
 # Apply any outstanding updates and remove unused packages
 #
 Log -t "Applying Updates and autoremoving unused packages"
-if ! UpdateAPTCache >> ${LOGFILE} 2>&1 ; then
-  Log -t "ERROR: Unable to update APT cache"
-  exit 1
-fi
-  
-if ! ApplyUpdates >> ${LOGFILE} 2>&1 ; then
-  Log "ERROR: Unable to apply updates"
-  exit 1
-fi
-
-if ! AutoRemovePackages >> ${LOGFILE} 2>&1 ; then
-  Log "ERROR: Unable to automatically remove unused packages"
-  exit 1
-fi
+UpdateAPTCache -l -t || exit 1
+ApplyUpdates -l -t || exit 1
+AutoRemovePackages -l -t || exit 1
 
 # All done
 Log -t ""

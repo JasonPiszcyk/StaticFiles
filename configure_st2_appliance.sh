@@ -36,6 +36,7 @@ MONGO_STACKSTORM_USER=stackstorm
 MONGO_STACKSTORM_PASSWORD="$(GenerateRandomString)"
 
 MONGO_CONF=/etc/mongod.conf
+MONGO_SVC=mongod.service
 
 MONGO_SORT_MEM_SIZE=209715200
 
@@ -213,14 +214,14 @@ __EOF
   InstallPackages -l -t mongodb-org || exit 1
 
   Log "\nMongoDB: Setting start at boot"
-  if ! systemctl enable mongod >> ${LOGFILE} 2>&1 ; then
-    Log -t "ERROR: Unable to set Mongo DB to run at startup"
-    exit 1
-  fi
+  ServiceControl -l -t enable ${MONGO_SVC} || exit 1
 
   Log "\nMongoDB: Starting"
-  if ! systemctl start mongod >> ${LOGFILE} 2>&1 ; then
-    Log -t "ERROR: Unable start Mongo DB"
+  ServiceControl -l -t start ${MONGO_SVC} || exit 1
+
+  Log "\nMongoDB: Waiting for service to start..."
+  if ! Service_WaitForLog -l -t ${MONGO_SVC} "Started MongoDB Database Server" ; then
+    Log -t "ERROR: MongoDB: Timeout waiting for service to start"
     exit 1
   fi
 

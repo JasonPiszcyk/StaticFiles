@@ -449,7 +449,7 @@ InstallPackages()
 
   local package_list="${arg_list[*]}"
 
-  apt-get -q -y install ${package_list}
+  apt-get -qq -y install ${package_list}
   if [ $? -ne 0 ]; then
     Log ${log_args} "ERROR: A problem occurred when trying to install packages:"
     Log ${log_args} "ERROR: Package List: >${package_list}<"
@@ -485,6 +485,83 @@ Get_APT_GPG_Key()
     Log ${log_args} "ERROR: URL: >${gpg_key_url}<"
     Log ${log_args} "ERROR: Keyring: >${gpg_key_ring}<"
   else
+    rc=true
+  fi
+
+  exec 1>&3 2>&4
+
+  ${rc}
+}
+
+
+#############################################################################
+#
+# Service Management Functions
+#
+#############################################################################
+##############
+# ServiceControl - Control a service vi systemctl 
+##############
+ServiceControl()
+{
+  local rc=false
+  local arg_list log_args
+  local cmd svc
+
+  CommonArgs arg_list log_args $*
+  if [ ${#arg_list[@]} -ne 2 ]; then
+    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    exit 1
+  fi
+
+  cmd="${arg_list[0]}"
+  svc="${arg_list[1]}"
+
+  systemctl ${cmd} ${svc}
+  if [ $? -ne 0 ]; then
+    Log ${log_args} "ERROR: Unable to perform command on service"
+    Log ${log_args} "ERROR: CMD: >${cmd}<"
+    Log ${log_args} "ERROR: Service: >${svc}<"
+  else
+    rc=true
+  fi
+
+  exec 1>&3 2>&4
+
+  ${rc}
+}
+
+##############
+# Service_WaitForLog - Wait for an entry in the service log
+##############
+Service_WaitForLog()
+{
+  local rc=false
+  local arg_list log_args
+  local max_wait_time=300
+  local svc wait_string
+
+
+  CommonArgs arg_list log_args $*
+
+  if [ ${#arg_list[@]} -eq 2 ]; then
+    max_wait_time="${arg_list[0]}"
+    svc="${arg_list[1]}"
+    wait_string="${arg_list[2]}"
+  elif [ ${#arg_list[@]} -eq 3 ]; then
+    svc="${arg_list[1]}"
+    wait_string="${arg_list[2]}"
+  else
+    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    exit 1
+  fi
+
+  if [ ${max_wait_time} -le 0 ]; then
+    bash -c "journalctl -u ssh.service -f --no-pager | grep -q \"${wait_string}\" "
+  else
+    timeout ${max_wait_time} bash -c "journalctl -u ssh.service -f --no-pager | grep -q \"${wait_string}\" "
+  fi
+  if [ $? -eq 0 ]; then
     rc=true
   fi
 

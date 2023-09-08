@@ -135,7 +135,7 @@ UpdateAPTCache()
   done
 
   apt-get -q update
-  if [ $? - ne 0 ]; then
+  if [ $? -ne 0 ]; then
     exec 1>&3 2>&4
     Log ${log_args} "ERROR: Unable to update APT cache"
   else
@@ -181,7 +181,7 @@ ApplyUpdates()
   done
 
   apt-get -q -y upgrade
-  if [ $? - ne 0 ]; then
+  if [ $? -ne 0 ]; then
     exec 1>&3 2>&4
     Log ${log_args} "ERROR: Unable to apply updates"
   else
@@ -227,7 +227,7 @@ AutoRemovePackages()
   done
 
   apt-get -q -y autoremove
-  if [ $? - ne 0 ]; then
+  if [ $? -ne 0 ]; then
     exec 1>&3 2>&4
     Log ${log_args} "ERROR: Unable to automatically remove unused packages"
   else
@@ -292,7 +292,7 @@ InstallPackages()
   package_list=$*
 
   apt-get -q -y install ${package_list}
-  if [ $? - ne 0 ]; then
+  if [ $? -ne 0 ]; then
     exec 1>&3 2>&4
     Log ${log_args} "ERROR: A problem occurred when trying to install packages:"
     Log ${log_args} "ERROR: Package List: >${package_list}<"
@@ -341,7 +341,7 @@ Get_APT_GPG_Key()
   gpg_key_ring="${2}"
 
   curl -1sLf "${gpg_key_url}" | gpg --dearmor -o ${gpg_key_ring}
-  if [ $? - ne 0 ]; then
+  if [ $? -ne 0 ]; then
     exec 1>&3 2>&4
     Log ${log_args} "ERROR: Unable to download and store GPG key."
     Log ${log_args} "ERROR: URL: >${gpg_key_url}<"

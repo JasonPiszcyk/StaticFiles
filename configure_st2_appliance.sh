@@ -29,7 +29,18 @@ MONGO_APT_URL=http://repo.mongodb.org/apt/ubuntu
 MONGO_KEYRING=${KEYRING_DIR}/mongodb-keyring.gpg
 MONGO_APT_SRCLIST=/etc/apt/sources.list.d/mongodb-org-4.4.list
 
-# RAbbitMQ Info
+MONGO_ADMIN_USER=admin
+MONGO_ADMIN_PASSWORD="$(GenerateRandomString)"
+
+MONGO_STACKSTORM_USER=stackstorm
+MONGO_STACKSTORM_PASSWORD="$(GenerateRandomString)"
+
+MONGO_CONF=/etc/mongod.conf
+
+MONGO_SORT_MEM_SIZE=209715200
+
+
+# RabbitMQ Info
 RMQ_TEAM_KEY_URL=https://keys.openpgp.org/vks/v1/by-fingerprint/0A9AF2115F4687BD29803A206B73A36E6026DFCA
 ERLANG_KEY_URL=https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/gpg.E495BB49CC4BBE5B.key
 RMQ_KEY_URL=https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/gpg.9F4587F226208342.key
@@ -42,6 +53,11 @@ ERLANG_APT_URL=http://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/deb/ubunt
 RMQ_APT_URL=https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-server/deb/ubuntu
 
 RMQ_APT_SRCLIST=/etc/apt/sources.list.d/rabbitmq.list
+
+RMQ_ENV_CONF=/etc/rabbitmq/rabbitmq-env.conf
+
+RMQ_USER=stackstorm
+RMQ_PASSWORD="$(GenerateRandomString)"
 
 
 # StackStorm Info
@@ -107,8 +123,7 @@ CustomiseEtcIssue()
 DisableCloudInit()
 {
   Log -t "Disabling cloud-init"
-  touch ${CLOUD_INIT_DISABLED} >> ${LOGFILE} 2>&1
-  if [ $? -ne 0 ]; then
+  if ! touch ${CLOUD_INIT_DISABLED} >> ${LOGFILE} 2>&1 ; then
     Log "ERROR: Unable to create file: ${CLOUD_INIT_DISABLED}"
     exit 1
   else
@@ -123,8 +138,7 @@ DisableCloudInit()
 PurgeSnaps()
 {
   Log -t "Purging any existing snaps"
-  apt purge snapd -y >> ${LOGFILE} 2>&1
-  if [ $? -ne 0 ]; then
+  if ! apt purge snapd -y >> ${LOGFILE} 2>&1 ; then
     Log -t "ERROR: Unable to purge snaps"
     exit 1
   else
@@ -141,22 +155,19 @@ ConfigureFirewall()
   Log -t "Setting up basic firewall"
 
   Log "\nUFW: Set default incoming policy"
-  ufw default deny incoming >> ${LOGFILE} 2>&1
-  if [ $? -ne 0 ]; then
+  if ! ufw default deny incoming >> ${LOGFILE} 2>&1 ; then
     Log -t "ERROR: Unable to set default UFW policy: Incoming"
     exit 1
   fi
 
   Log "\nUFW: Set default outgoing policy"
-  ufw default allow outgoing >> ${LOGFILE} 2>&1
-  if [ $? -ne 0 ]; then
+  if ! ufw default allow outgoing >> ${LOGFILE} 2>&1 ; then
     Log -t "ERROR: Unable to set default UFW policy: Outgoing"
     exit 1
   fi
 
   Log "\nUFW: Allow SSH"
-  ufw allow ssh >> ${LOGFILE} 2>&1
-  if [ $? -ne 0 ]; then
+  if ! ufw allow ssh >> ${LOGFILE} 2>&1 ; then
     Log -t "ERROR: Unable to set allow SSH incoming in UFW"
     exit 1
   else
@@ -164,8 +175,7 @@ ConfigureFirewall()
   fi
 
   Log "\nUFW: Restart"
-  ufw disable && ufw --force enable >> ${LOGFILE} 2>&1
-  if [ $? -ne 0 ]; then
+  if ! ufw disable && ufw --force enable >> ${LOGFILE} 2>&1 ; then
     Log -t "ERROR: Unable to restart UFW"
     exit 1
   else
@@ -173,8 +183,7 @@ ConfigureFirewall()
   fi
 
   Log "\nUFW: Show status"
-  ufw status verbose >> ${LOGFILE} 2>&1
-  if [ $? -ne 0 ]; then
+  if ! ufw status verbose >> ${LOGFILE} 2>&1 ; then
     Log -t "ERROR: Unable to get UFW status"
     exit 1
   fi
@@ -212,6 +221,62 @@ __EOF
   Log "\nMongoDB: Starting"
   if ! systemctl start mongod >> ${LOGFILE} 2>&1 ; then
     Log -t "ERROR: Unable start Mongo DB"
+    exit 1
+  fi
+
+  Log "\nMongoDB: Increasing Sort Memory"
+  mongo << __EOF
+db.adminCommand({
+    "setParameter": 1,
+    "internalQueryMaxBlockingSortMemoryUsageBytes": ${MONGO_SORT_MEM_SIZE}
+});
+__EOF
+  if [ $? -ne 0 ]; then
+    Log -t "ERROR: MongoDB: Increasing Sort Memory"
+    exit 1
+  fi
+
+  Log "\nMongoDB: Creating Admin user"
+  mongo << __EOF
+use admin;
+db.createUser({
+    user: "${MONGO_ADMIN_USER}",
+    pwd: "${MONGO_ADMIN_PASSWORD}",
+    roles: [
+        { role: "userAdminAnyDatabase", db: "admin" },
+        { role: "root", db: "admin" }
+    ]
+});
+__EOF
+  if [ $? -ne 0 ]; then
+    Log -t "ERROR: MongoDB: Creating Admin user"
+    exit 1
+  fi
+
+  Log "\nMongoDB: Creating Stackstorm user"
+  mongo << __EOF
+use st2;
+db.createUser({
+    user: "${MONGO_STACKSTORM_USER}",
+    pwd: "${MONGO_STACKSTORM_PASSWORD}",
+    roles: [
+        { role: "readWrite", db: "st2" }
+    ]
+});
+__EOF
+  if [ $? -ne 0 ]; then
+    Log -t "ERROR: MongoDB: Creating Stackstorm user"
+    exit 1
+  fi
+
+  # Modify Mongo config to require authentication
+  Log "\nMongoDB: Setting MongoDB to require authentication"
+  SedFile -l -t 's/^#security:/security:/g' ${MONGO_CONF} || exit 1
+  SedFile -l -t '/security:/a\  authorization: enabled' ${MONGO_CONF} || exit 1
+
+  Log "\nMongoDB: Restarting"
+  if ! systemctl restart mongod >> ${LOGFILE} 2>&1 ; then
+    Log -t "ERROR: Unable restart Mongo DB"
     exit 1
   fi
 
@@ -255,6 +320,31 @@ __EOF
   InstallPackages -l -t rabbitmq-server --fix-missing || exit 1
   InstallPackages -l -t redis-server || exit 1
 
+  # Set up RabbitMQ to only listen on localhost
+  echo "RABBITMQ_NODE_IP_ADDRESS=127.0.0.1" >> ${RMQ_ENV_CONF}
+
+  Log "\nRabbitMQ: Creating Stackstorm user"
+  if ! rabbitmqctl add_user ${RMQ_USER} ${RMQ_PASSWORD} >> ${LOGFILE} 2>&1 ; then
+    Log -t "ERROR: RabbitMQ: Adding stackstorm user"
+    exit 1
+  fi
+
+  if ! rabbitmqctl set_user_tags ${RMQ_USER} administrator  >> ${LOGFILE} 2>&1 ; then
+    Log -t "ERROR: RabbitMQ: Setting stackstorm user as admin"
+    exit 1
+  fi
+
+  if ! rabbitmqctl set_permissions -p / ${RMQ_USER} ".*" ".*" ".*"  >> ${LOGFILE} 2>&1 ; then
+    Log -t "ERROR: RabbitMQ: Setting stackstorm user permissions"
+    exit 1
+  fi
+  
+  Log "\nRabbitMQ: Deleting guest user"
+  if ! rabbitmqctl delete_user guest  >> ${LOGFILE} 2>&1 ; then
+    Log -t "ERROR: RabbitMQ: Deleting guest user"
+    exit 1
+  fi
+  
   Log -t ""
 }
 
@@ -282,12 +372,19 @@ __EOF
   InstallPackages -l -t gcc libkrb5-dev || exit 1
 
   Log "\nStackStorm: Updating Config File"
-  SetIniEntry ${ST2_CONF} garbagecollector purge_inquiries 'True' || exit 1
+  SetIniEntry -l -t ${ST2_CONF} garbagecollector purge_inquiries 'True' || exit 1
 
   Log "\nStackStorm: Configuring NGINX to only run ST2 Interface"
   RemoveFile -l -t /etc/nginx/conf.d/default.conf || exit 1
   RemoveFile -l -t /etc/nginx/sites-enabled/default || exit 1
-  CopyFile -l -t /usr/share/doc/st2/conf/nginx/st2.conf /etc/nginx/conf.d/
+  CopyFile -l -t /usr/share/doc/st2/conf/nginx/st2.conf /etc/nginx/conf.d/ || exit 1
+
+  Log "\nStackStorm: Configuring RabbitMQ user"
+  SetIniEntry -l -t ${ST2_CONF} messaging url "amqp://stackstorm:${RMQ_PASSWORD}@127.0.0.1:5672" || exit 1
+
+  Log "\nStackStorm: Configuring MongoDB user"
+  SetIniEntry -l -t ${ST2_CONF} database username "${MONGO_STACKSTORM_USER}" || exit 1
+  SetIniEntry -l -t ${ST2_CONF} database password "${MONGO_STACKSTORM_PASSWORD}" || exit 1
 
   Log -t ""
 }

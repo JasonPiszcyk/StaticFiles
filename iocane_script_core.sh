@@ -125,6 +125,28 @@ Log()
 }
 
 
+##############
+# GenerateRandomString - Generate a random string
+##############
+GenerateRandomString()
+{
+  local strlen=20
+  local bytecount
+
+  if [ $# -eq 1 ]; then
+    strlen=${1}
+  fi
+
+  # We generate 256 random chars for weach character we want, to make sure we get enough
+  # alphanumeric characters in the string 
+  bytecount=$(( $strlen * 256 ))
+
+  # Get a bunch of random chars - we ignore everything but alphanumerics as special chars (such
+  # as '*' or '%') give problems when used as passswords
+  dd if=/dev/random count=${bytecount} bs=1 status=none | tr -dc '[:alnum:]' | cut -b1-${strlen}
+}
+
+
 #############################################################################
 #
 # File/Directory Manipulation Functions
@@ -135,35 +157,17 @@ Log()
 ##############
 RemoveFile()
 {
-  rc=false
-  log_args=""
+  local rc=false
+  local arg_list log_args
+  local file_to_delete
 
-  exec 3>&1 4>&2
+  CommonArgs arg_list log_args $*
+  if [ ${#arg_list[@]} -ne 1 ]; then
+    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    exit 1
+  fi
 
-  while [ $# -gt 0 ]; do
-    case "${1}" in
-      -l)       # Send output to logfile rather than terminal
-        exec &>> ${LOGFILE}
-        shift
-        ;;
-
-      -t)       # If we call Log, send output to both log and terminal
-        log_args="${log_args} -t"
-        shift
-        ;;
-
-      -d)       # If we call Log, display a date/timestamp prefix
-        log_args="${log_args} -d"
-        shift
-        ;;
-
-      *)        # End of parameters
-        break
-        ;;
-    esac
-  done
-
-  file_to_delete="${1}"
+  file_to_delete="${arg_list[0]}"
 
   if [ -f ${file_to_delete} ]; then
     rm -f ${file_to_delete}
@@ -172,13 +176,13 @@ RemoveFile()
   fi
 
   if [ $? -ne 0 ]; then
-    exec 1>&3 2>&4
     Log ${log_args} "ERROR: Unable to delete file"
     Log ${log_args} "ERROR: File: >${file_to_delete}<"
   else
-    exec 1>&3 2>&4
     rc=true
   fi
+
+  exec 1>&3 2>&4
 
   ${rc}
 }
@@ -190,13 +194,10 @@ RemoveFile()
 CopyFile()
 {
   local rc=false
-  local log_args
-  local arg_list
-  local src
-  local dest
+  local arg_list log_args
+  local src dest
 
   CommonArgs arg_list log_args $*
-
   if [ ${#arg_list[@]} -ne 2 ]; then
     echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
     exit 1
@@ -205,22 +206,21 @@ CopyFile()
   src="${arg_list[0]}"
   dest="${arg_list[1]}"
 
-  # if [ -f ${file_to_delete} ]; then
-  #   rm -f ${file_to_delete}
-  # else
-  #   true
-  # fi
+  if [ -e ${src} ]; then
+    cp ${src} ${dest}
+  else
+    true
+  fi
 
-  true
   if [ $? -ne 0 ]; then
-    exec 1>&3 2>&4
     Log ${log_args} "ERROR: Unable to copy file"
     Log ${log_args} "ERROR: File: >${src}<"
     Log ${log_args} "ERROR: Destination: >${dest}<"
   else
-    exec 1>&3 2>&4
     rc=true
   fi
+  
+  exec 1>&3 2>&4
 
   ${rc}
 }
@@ -231,50 +231,32 @@ CopyFile()
 ##############
 SetIniEntry()
 {
-  rc=false
-  log_args=""
+  local rc=false
+  local arg_list log_args
+  local ini_file ini_section ini_param ini_value
 
-  exec 3>&1 4>&2
+  CommonArgs arg_list log_args $*
+  if [ ${#arg_list[@]} -ne 4 ]; then
+    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    exit 1
+  fi
 
-  while [ $# -gt 0 ]; do
-    case "${1}" in
-      -l)       # Send output to logfile rather than terminal
-        exec &>> ${LOGFILE}
-        shift
-        ;;
-
-      -t)       # If we call Log, send output to both log and terminal
-        log_args="${log_args} -t"
-        shift
-        ;;
-
-      -d)       # If we call Log, display a date/timestamp prefix
-        log_args="${log_args} -d"
-        shift
-        ;;
-
-      *)        # End of parameters
-        break
-        ;;
-    esac
-  done
-
-  ini_file="${1}"
-  ini_section="${2}"
-  ini_param="${3}"
-  ini_value="${4}"
+  ini_file="${arg_list[0]}"
+  ini_section="${arg_list[1]}"
+  ini_param="${arg_list[2]}"
+  ini_value="${arg_list[3]}"
 
   crudini --set "${ini_file}" "${ini_section}" "${ini_param}" "${ini_value}"
   if [ $? -ne 0 ]; then
-    exec 1>&3 2>&4
     Log ${log_args} "ERROR: Unable to set entry in INI file"
     Log ${log_args} "ERROR: INI File: >${ini_file}<"
     Log ${log_args} "ERROR: Section: >${ini_section}<"
     Log ${log_args} "ERROR: Parameter: >${ini_param}<"
   else
-    exec 1>&3 2>&4
     rc=true
   fi
+
+  exec 1>&3 2>&4
 
   ${rc}
 }
@@ -285,49 +267,64 @@ SetIniEntry()
 ##############
 DelIniEntry()
 {
-  rc=false
-  log_args=""
+  local rc=false
+  local arg_list log_args
+  local ini_file ini_section ini_param
 
-  exec 3>&1 4>&2
+  CommonArgs arg_list log_args $*
+  if [ ${#arg_list[@]} -ne 3 ]; then
+    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    exit 1
+  fi
 
-  while [ $# -gt 0 ]; do
-    case "${1}" in
-      -l)       # Send output to logfile rather than terminal
-        exec &>> ${LOGFILE}
-        shift
-        ;;
-
-      -t)       # If we call Log, send output to both log and terminal
-        log_args="${log_args} -t"
-        shift
-        ;;
-
-      -d)       # If we call Log, display a date/timestamp prefix
-        log_args="${log_args} -d"
-        shift
-        ;;
-
-      *)        # End of parameters
-        break
-        ;;
-    esac
-  done
-
-  ini_file="${1}"
-  ini_section="${2}"
-  ini_param="${3}"
+  ini_file="${arg_list[0]}"
+  ini_section="${arg_list[1]}"
+  ini_param="${arg_list[2]}"
 
   crudini --del "${ini_file}" "${ini_section}" "${ini_param}"
   if [ $? -ne 0 ]; then
-    exec 1>&3 2>&4
     Log ${log_args} "ERROR: Unable to delete entry from INI file"
     Log ${log_args} "ERROR: INI File: >${ini_file}<"
     Log ${log_args} "ERROR: Section: >${ini_section}<"
     Log ${log_args} "ERROR: Parameter: >${ini_param}<"
   else
-    exec 1>&3 2>&4
     rc=true
   fi
+
+  exec 1>&3 2>&4
+
+  ${rc}
+}
+
+
+##############
+# SedFile - Run a sed command against a file
+##############
+SedFile()
+{
+  local rc=false
+  local arg_list log_args
+  local sed_cmd target_file
+
+  CommonArgs arg_list log_args $*
+  if [ ${#arg_list[@]} -ne 2 ]; then
+    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    exit 1
+  fi
+
+  sed_cmd="${arg_list[0]}"
+  target_file="${arg_list[1]}"
+
+  sed -i "${sed_cmd}" ${target_file}
+  if [ $? -ne 0 ]; then
+    Log ${log_args} "ERROR: Unable to edit file via sed"
+    Log ${log_args} "ERROR: Target File: >${target_file}<"
+    Log ${log_args} "ERROR: sed command: >${sed_cmd}<"
+  else
+    rc=true
+  fi
+
+  exec 1>&3 2>&4
 
   ${rc}
 }
@@ -343,42 +340,23 @@ DelIniEntry()
 ##############
 UpdateAPTCache()
 {
-  rc=false
-  log_args=""
+  local rc=false
+  local arg_list log_args
 
-  exec 3>&1 4>&2
-
-  while [ $# -gt 0 ]; do
-    case "${1}" in
-      -l)       # Send output to logfile rather than terminal
-        exec &>> ${LOGFILE}
-        shift
-        ;;
-
-      -t)       # If we call Log, send output to both log and terminal
-        log_args="${log_args} -t"
-        shift
-        ;;
-
-      -d)       # If we call Log, display a date/timestamp prefix
-        log_args="${log_args} -d"
-        shift
-        ;;
-
-      *)        # End of parameters
-        break
-        ;;
-    esac
-  done
+  CommonArgs arg_list log_args $*
+  if [ ${#arg_list[@]} -ne 0 ]; then
+    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    exit 1
+  fi
 
   apt-get -q update
   if [ $? -ne 0 ]; then
-    exec 1>&3 2>&4
     Log ${log_args} "ERROR: Unable to update APT cache"
   else
-    exec 1>&3 2>&4
     rc=true
   fi
+
+  exec 1>&3 2>&4
 
   ${rc}
 }
@@ -389,42 +367,23 @@ UpdateAPTCache()
 ##############
 ApplyUpdates()
 {
-  rc=false
-  log_args=""
+  local rc=false
+  local arg_list log_args
 
-  exec 3>&1 4>&2
-
-  while [ $# -gt 0 ]; do
-    case "${1}" in
-      -l)       # Send output to logfile rather than terminal
-        exec &>> ${LOGFILE}
-        shift
-        ;;
-
-      -t)       # If we call Log, send output to both log and terminal
-        log_args="${log_args} -t"
-        shift
-        ;;
-
-      -d)       # If we call Log, display a date/timestamp prefix
-        log_args="${log_args} -d"
-        shift
-        ;;
-
-      *)        # End of parameters
-        break
-        ;;
-    esac
-  done
+  CommonArgs arg_list log_args $*
+  if [ ${#arg_list[@]} -ne 0 ]; then
+    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    exit 1
+  fi
 
   apt-get -q -y upgrade
   if [ $? -ne 0 ]; then
-    exec 1>&3 2>&4
     Log ${log_args} "ERROR: Unable to apply updates"
   else
-    exec 1>&3 2>&4
     rc=true
   fi
+
+  exec 1>&3 2>&4
 
   ${rc}
 }
@@ -435,42 +394,23 @@ ApplyUpdates()
 ##############
 AutoRemovePackages()
 {
-  rc=false
-  log_args=""
+  local rc=false
+  local arg_list log_args
 
-  exec 3>&1 4>&2
-
-  while [ $# -gt 0 ]; do
-    case "${1}" in
-      -l)       # Send output to logfile rather than terminal
-        exec &>> ${LOGFILE}
-        shift
-        ;;
-
-      -t)       # If we call Log, send output to both log and terminal
-        log_args="${log_args} -t"
-        shift
-        ;;
-
-      -d)       # If we call Log, display a date/timestamp prefix
-        log_args="${log_args} -d"
-        shift
-        ;;
-
-      *)        # End of parameters
-        break
-        ;;
-    esac
-  done
+  CommonArgs arg_list log_args $*
+  if [ ${#arg_list[@]} -ne 0 ]; then
+    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    exit 1
+  fi
 
   apt-get -q -y autoremove
   if [ $? -ne 0 ]; then
-    exec 1>&3 2>&4
     Log ${log_args} "ERROR: Unable to automatically remove unused packages"
   else
-    exec 1>&3 2>&4
     rc=true
   fi
+
+  exec 1>&3 2>&4
 
   ${rc}
 }
@@ -498,45 +438,26 @@ IsPackageInstalled()
 ##############
 InstallPackages()
 {
-  rc=false
-  log_args=""
+  local rc=false
+  local arg_list log_args
 
-  exec 3>&1 4>&2
+  CommonArgs arg_list log_args $*
+  if [ ${#arg_list[@]} -lt 1 ]; then
+    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    exit 1
+  fi
 
-  while [ $# -gt 0 ]; do
-    case "${1}" in
-      -l)       # Send output to logfile rather than terminal
-        exec &>> ${LOGFILE}
-        shift
-        ;;
-
-      -t)       # If we call Log, send output to both log and terminal
-        log_args="${log_args} -t"
-        shift
-        ;;
-
-      -d)       # If we call Log, display a date/timestamp prefix
-        log_args="${log_args} -d"
-        shift
-        ;;
-
-      *)        # End of parameters
-        break
-        ;;
-    esac
-  done
-
-  package_list=$*
+  local package_list="${arg_list[*]}"
 
   apt-get -q -y install ${package_list}
   if [ $? -ne 0 ]; then
-    exec 1>&3 2>&4
     Log ${log_args} "ERROR: A problem occurred when trying to install packages:"
     Log ${log_args} "ERROR: Package List: >${package_list}<"
   else
-    exec 1>&3 2>&4
     rc=true
   fi
+
+  exec 1>&3 2>&4
 
   ${rc}
 }
@@ -546,47 +467,28 @@ InstallPackages()
 ##############
 Get_APT_GPG_Key()
 {
-  rc=false
-  log_args=""
+  local rc=false
+  local arg_list log_args
 
-  exec 3>&1 4>&2
+  CommonArgs arg_list log_args $*
+  if [ ${#arg_list[@]} -ne 2 ]; then
+    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    exit 1
+  fi
 
-  while [ $# -gt 0 ]; do
-    case "${1}" in
-      -l)       # Send output to logfile rather than terminal
-        exec &>> ${LOGFILE}
-        shift
-        ;;
-
-      -t)       # If we call Log, send output to both log and terminal
-        log_args="${log_args} -t"
-        shift
-        ;;
-
-      -d)       # If we call Log, display a date/timestamp prefix
-        log_args="${log_args} -d"
-        shift
-        ;;
-
-      *)        # End of parameters
-        break
-        ;;
-    esac
-  done
-
-  gpg_key_url="${1}"
-  gpg_key_ring="${2}"
+  local gpg_key_url="${arg_list[0]}"
+  local gpg_key_ring="${arg_list[1]}"
 
   curl -1sLf "${gpg_key_url}" | gpg --dearmor -o ${gpg_key_ring}
   if [ $? -ne 0 ]; then
-    exec 1>&3 2>&4
     Log ${log_args} "ERROR: Unable to download and store GPG key."
     Log ${log_args} "ERROR: URL: >${gpg_key_url}<"
     Log ${log_args} "ERROR: Keyring: >${gpg_key_ring}<"
   else
-    exec 1>&3 2>&4
     rc=true
   fi
+
+  exec 1>&3 2>&4
 
   ${rc}
 }

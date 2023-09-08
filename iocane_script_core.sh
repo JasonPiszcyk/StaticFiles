@@ -557,9 +557,9 @@ Service_WaitForLog()
   fi
 
   if [ ${max_wait_time} -le 0 ]; then
-    bash -c "journalctl -u ssh.service -f --no-pager | grep -q \"${wait_string}\" "
+    bash -c "journalctl -u ${svc} -f --no-pager | grep -q \"${wait_string}\" "
   else
-    timeout ${max_wait_time} bash -c "journalctl -u ssh.service -f --no-pager | grep -q \"${wait_string}\" "
+    timeout ${max_wait_time} bash -c "journalctl -u ${svc} -f --no-pager | grep -q \"${wait_string}\" "
   fi
   if [ $? -eq 0 ]; then
     rc=true

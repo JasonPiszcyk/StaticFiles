@@ -41,12 +41,57 @@ CUR_DATE=$(date +"%d/%m/%Y")
 # Hostname
 CUR_HOST=$(hostname)
 
+# Create File descriptors to save STDOUT/STDERR
+exec 3>&1 4>&2
 
 #############################################################################
 #
 # Functions
 #
 #############################################################################
+##############
+# CommonArgs - Function to handle common args in our functions
+##############
+CommonArgs()
+{
+  if [ $# -lt 2 ]; then
+    echo "ERROR: Incorrect parameters passed to CommonArgs. Exiting" 1>&3 2>&4
+    exit 1
+  fi
+
+  local -n arg_list="${1}"
+  local -n log_args="${2}"
+  shift 2
+
+  log_args=""
+
+  while [ $# -gt 0 ]; do
+    case "${1}" in
+      -l)       # Send output to logfile rather than terminal
+        exec &>> ${LOGFILE}
+        shift
+        ;;
+
+      -t)       # If we call Log, send output to both log and terminal
+        log_args="${log_args} -t"
+        shift
+        ;;
+
+      -d)       # If we call Log, display a date/timestamp prefix
+        log_args="${log_args} -d"
+        shift
+        ;;
+
+      *)        # End of parameters
+        break
+        ;;
+    esac
+  done
+
+  arg_list=( "$@" )
+}
+
+
 ##############
 # Log - Write a message to the logfile (and optionally to the screen)
 ##############
@@ -67,7 +112,7 @@ Log()
 
       -t)       # Display output the terminal
         shift
-        echo -e "$*"
+        echo -e "$*" 1>&3 2>&4
         ;;
 
       *)        # End of parameters
@@ -90,9 +135,197 @@ Log()
 ##############
 RemoveFile()
 {
+  rc=false
+  log_args=""
+
+  exec 3>&1 4>&2
+
+  while [ $# -gt 0 ]; do
+    case "${1}" in
+      -l)       # Send output to logfile rather than terminal
+        exec &>> ${LOGFILE}
+        shift
+        ;;
+
+      -t)       # If we call Log, send output to both log and terminal
+        log_args="${log_args} -t"
+        shift
+        ;;
+
+      -d)       # If we call Log, display a date/timestamp prefix
+        log_args="${log_args} -d"
+        shift
+        ;;
+
+      *)        # End of parameters
+        break
+        ;;
+    esac
+  done
+
   file_to_delete="${1}"
 
-  [ -f ${file_to_delete} ] && rm -f ${TMP_FILE} || true
+  if [ -f ${file_to_delete} ]; then
+    rm -f ${file_to_delete}
+  else
+    true
+  fi
+
+  if [ $? -ne 0 ]; then
+    exec 1>&3 2>&4
+    Log ${log_args} "ERROR: Unable to delete file"
+    Log ${log_args} "ERROR: File: >${file_to_delete}<"
+  else
+    exec 1>&3 2>&4
+    rc=true
+  fi
+
+  ${rc}
+}
+
+
+##############
+# CopyFile - Copy a file
+##############
+CopyFile()
+{
+  rc=false
+
+  CommonArgs ${log_args} ${arg_list} $*
+
+  if [ ${#arg_list[@]} -ne 2 ]; then
+    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    exit 1
+  fi
+
+  src="${arg_list[0]}"
+  dest="${arg_list[1]}"
+
+  # if [ -f ${file_to_delete} ]; then
+  #   rm -f ${file_to_delete}
+  # else
+  #   true
+  # fi
+
+  true
+  if [ $? -ne 0 ]; then
+    exec 1>&3 2>&4
+    Log ${log_args} "ERROR: Unable to copy file"
+    Log ${log_args} "ERROR: File: >${src}<"
+    Log ${log_args} "ERROR: Destination: >${dest}<"
+  else
+    exec 1>&3 2>&4
+    rc=true
+  fi
+
+  ${rc}
+}
+
+
+##############
+# SetIniEntry - Set an entry in an ini file
+##############
+SetIniEntry()
+{
+  rc=false
+  log_args=""
+
+  exec 3>&1 4>&2
+
+  while [ $# -gt 0 ]; do
+    case "${1}" in
+      -l)       # Send output to logfile rather than terminal
+        exec &>> ${LOGFILE}
+        shift
+        ;;
+
+      -t)       # If we call Log, send output to both log and terminal
+        log_args="${log_args} -t"
+        shift
+        ;;
+
+      -d)       # If we call Log, display a date/timestamp prefix
+        log_args="${log_args} -d"
+        shift
+        ;;
+
+      *)        # End of parameters
+        break
+        ;;
+    esac
+  done
+
+  ini_file="${1}"
+  ini_section="${2}"
+  ini_param="${3}"
+  ini_value="${4}"
+
+  crudini --set "${ini_file}" "${ini_section}" "${ini_param}" "${ini_value}"
+  if [ $? -ne 0 ]; then
+    exec 1>&3 2>&4
+    Log ${log_args} "ERROR: Unable to set entry in INI file"
+    Log ${log_args} "ERROR: INI File: >${ini_file}<"
+    Log ${log_args} "ERROR: Section: >${ini_section}<"
+    Log ${log_args} "ERROR: Parameter: >${ini_param}<"
+  else
+    exec 1>&3 2>&4
+    rc=true
+  fi
+
+  ${rc}
+}
+
+
+##############
+# DelIniEntry - Delete an entry from an ini file
+##############
+DelIniEntry()
+{
+  rc=false
+  log_args=""
+
+  exec 3>&1 4>&2
+
+  while [ $# -gt 0 ]; do
+    case "${1}" in
+      -l)       # Send output to logfile rather than terminal
+        exec &>> ${LOGFILE}
+        shift
+        ;;
+
+      -t)       # If we call Log, send output to both log and terminal
+        log_args="${log_args} -t"
+        shift
+        ;;
+
+      -d)       # If we call Log, display a date/timestamp prefix
+        log_args="${log_args} -d"
+        shift
+        ;;
+
+      *)        # End of parameters
+        break
+        ;;
+    esac
+  done
+
+  ini_file="${1}"
+  ini_section="${2}"
+  ini_param="${3}"
+
+  crudini --del "${ini_file}" "${ini_section}" "${ini_param}"
+  if [ $? -ne 0 ]; then
+    exec 1>&3 2>&4
+    Log ${log_args} "ERROR: Unable to delete entry from INI file"
+    Log ${log_args} "ERROR: INI File: >${ini_file}<"
+    Log ${log_args} "ERROR: Section: >${ini_section}<"
+    Log ${log_args} "ERROR: Parameter: >${ini_param}<"
+  else
+    exec 1>&3 2>&4
+    rc=true
+  fi
+
+  ${rc}
 }
 
 

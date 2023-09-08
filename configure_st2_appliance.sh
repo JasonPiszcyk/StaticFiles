@@ -50,6 +50,8 @@ ST2_APT_URL=https://packagecloud.io/StackStorm/stable/ubuntu
 ST2_KEYRING=${KEYRING_DIR}/StackStorm_stable-archive-keyring.gpg
 ST2_APT_SRCLIST=/etc/apt/sources.list.d/StackStorm_stable.list
 
+ST2_CONF=/etc/st2/st2.conf
+
 
 #############################################################################
 #
@@ -278,6 +280,14 @@ __EOF
   Log "\nStackStorm: Installing Packages"
   InstallPackages -l -t st2 st2web nginx libldap2-dev libsasl2-dev ldap-utils || exit 1
   InstallPackages -l -t gcc libkrb5-dev || exit 1
+
+  Log "\nStackStorm: Updating Config File"
+  SetIniEntry ${ST2_CONF} garbagecollector purge_inquiries 'True' || exit 1
+
+  Log "\nStackStorm: Configuring NGINX to only run ST2 Interface"
+  RemoveFile -l -t /etc/nginx/conf.d/default.conf || exit 1
+  RemoveFile -l -t /etc/nginx/sites-enabled/default || exit 1
+  CopyFile -l -t /usr/share/doc/st2/conf/nginx/st2.conf /etc/nginx/conf.d/
 
   Log -t ""
 }

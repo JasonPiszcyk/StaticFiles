@@ -59,11 +59,11 @@ CommonArgs()
     exit 1
   fi
 
-  local -n arg_list="${1}"
-  local -n log_args="${2}"
+  local -n common_args_arg_list="${1}"
+  local -n common_args_log_args="${2}"
   shift 2
 
-  log_args=""
+  common_args_log_args=""
 
   while [ $# -gt 0 ]; do
     case "${1}" in
@@ -73,12 +73,12 @@ CommonArgs()
         ;;
 
       -t)       # If we call Log, send output to both log and terminal
-        log_args="${log_args} -t"
+        common_args_log_args="${log_args} -t"
         shift
         ;;
 
       -d)       # If we call Log, display a date/timestamp prefix
-        log_args="${log_args} -d"
+        common_args_log_args="${log_args} -d"
         shift
         ;;
 
@@ -88,7 +88,7 @@ CommonArgs()
     esac
   done
 
-  arg_list=( "$@" )
+  common_args_arg_list=( "$@" )
 }
 
 
@@ -190,9 +190,12 @@ RemoveFile()
 CopyFile()
 {
   local rc=false
-  local log_args, arg_list
+  local log_args
+  local arg_list
+  local src
+  local dest
 
-  CommonArgs log_args arg_list $*
+  CommonArgs arg_list log_args $*
 
   if [ ${#arg_list[@]} -ne 2 ]; then
     echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4

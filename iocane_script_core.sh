@@ -189,9 +189,10 @@ RemoveFile()
 ##############
 CopyFile()
 {
-  rc=false
+  local rc=false
+  local log_args, arg_list
 
-  CommonArgs ${log_args} ${arg_list} $*
+  CommonArgs log_args arg_list $*
 
   if [ ${#arg_list[@]} -ne 2 ]; then
     echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4

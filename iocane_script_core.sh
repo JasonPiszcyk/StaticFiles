@@ -12,19 +12,6 @@
 # Copyright (c) 2023 Iocane Pty Ltd
 #
 
-
-#
-# Notes on functions in this file
-#
-# Most functions implement code to redirect output to logfile if desired.
-# The following statements will apear in most functions...
-#   Save STDOUT to file descriptor 3, STDERR to file descriptor 4
-#     exec 3>&1 4>&2
-#
-#   Restore STDOUT and STDERR to state saved previously
-#     exec 1>&3 2>&4
-#      
-
 # Standard Environment variables
 PROG=${PROG:-$(basename $0)}
 
@@ -41,8 +28,40 @@ CUR_DATE=$(date +"%d/%m/%Y")
 # Hostname
 CUR_HOST=$(hostname)
 
-# Create File descriptors to save STDOUT/STDERR
-exec 3>&1 4>&2
+
+# Open duplicates of the file descriptors
+# Do this here to make sure they are global!!!!
+exec {STDOUT}>&1 {STDERR}>&2
+
+
+#############################################################################
+#
+# File Descriptor Management
+#
+#############################################################################
+##############
+# SaveFileDescriptors - Save the standard file descriptors
+##############
+SaveFileDescriptors()
+{
+  exec {STDOUT}>&1 {STDERR}>&2
+}
+
+
+##############
+# RestoreFileDescriptors - Restore the filedescriptors we saved
+##############
+RestoreFileDescriptors()
+{
+  # Close the file descriptors
+  # The resets STDOUT/STDERR four use and flushes the other FD's
+  exec >&"${STDOUT}" 2>&"${STDERR}" {STDOUT}>&- {STDERR}>&-
+
+  # Re-open/Re-Duplicate the file descriptors
+  # Make sure they are available if needed
+  SaveFileDescriptors
+}
+
 
 #############################################################################
 #
@@ -55,7 +74,7 @@ exec 3>&1 4>&2
 CommonArgs()
 {
   if [ $# -lt 2 ]; then
-    echo "ERROR: Incorrect parameters passed to CommonArgs. Exiting" 1>&3 2>&4
+    echo "ERROR: Incorrect parameters passed to CommonArgs. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
   fi
 
@@ -112,7 +131,7 @@ Log()
 
       -t)       # Display output the terminal
         shift
-        echo -e "$*" 1>&3 2>&4
+        echo -e "$*" >&"${STDOUT}" 2>&"${STDERR}"
         ;;
 
       *)        # End of parameters
@@ -147,11 +166,6 @@ GenerateRandomString()
 }
 
 
-#############################################################################
-#
-# File/Directory Manipulation Functions
-#
-#############################################################################
 ##############
 # RemoveFile - Remove a file if it exists
 ##############
@@ -163,7 +177,7 @@ RemoveFile()
 
   CommonArgs arg_list log_args $*
   if [ ${#arg_list[@]} -ne 1 ]; then
-    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
   fi
 
@@ -182,7 +196,7 @@ RemoveFile()
     rc=true
   fi
 
-  exec 1>&3 2>&4
+  RestoreFileDescriptors
 
   ${rc}
 }
@@ -199,7 +213,7 @@ CopyFile()
 
   CommonArgs arg_list log_args $*
   if [ ${#arg_list[@]} -ne 2 ]; then
-    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
   fi
 
@@ -220,7 +234,7 @@ CopyFile()
     rc=true
   fi
   
-  exec 1>&3 2>&4
+  RestoreFileDescriptors
 
   ${rc}
 }
@@ -237,7 +251,7 @@ SetIniEntry()
 
   CommonArgs arg_list log_args $*
   if [ ${#arg_list[@]} -ne 4 ]; then
-    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
   fi
 
@@ -256,7 +270,7 @@ SetIniEntry()
     rc=true
   fi
 
-  exec 1>&3 2>&4
+  RestoreFileDescriptors
 
   ${rc}
 }
@@ -273,7 +287,7 @@ DelIniEntry()
 
   CommonArgs arg_list log_args $*
   if [ ${#arg_list[@]} -ne 3 ]; then
-    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
   fi
 
@@ -291,7 +305,7 @@ DelIniEntry()
     rc=true
   fi
 
-  exec 1>&3 2>&4
+  RestoreFileDescriptors
 
   ${rc}
 }
@@ -308,7 +322,7 @@ SedFile()
 
   CommonArgs arg_list log_args $*
   if [ ${#arg_list[@]} -ne 2 ]; then
-    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
   fi
 
@@ -324,7 +338,7 @@ SedFile()
     rc=true
   fi
 
-  exec 1>&3 2>&4
+  RestoreFileDescriptors
 
   ${rc}
 }
@@ -345,7 +359,7 @@ UpdateAPTCache()
 
   CommonArgs arg_list log_args $*
   if [ ${#arg_list[@]} -ne 0 ]; then
-    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
   fi
 
@@ -356,7 +370,7 @@ UpdateAPTCache()
     rc=true
   fi
 
-  exec 1>&3 2>&4
+  RestoreFileDescriptors
 
   ${rc}
 }
@@ -372,7 +386,7 @@ ApplyUpdates()
 
   CommonArgs arg_list log_args $*
   if [ ${#arg_list[@]} -ne 0 ]; then
-    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
   fi
 
@@ -383,7 +397,7 @@ ApplyUpdates()
     rc=true
   fi
 
-  exec 1>&3 2>&4
+  RestoreFileDescriptors
 
   ${rc}
 }
@@ -399,7 +413,7 @@ AutoRemovePackages()
 
   CommonArgs arg_list log_args $*
   if [ ${#arg_list[@]} -ne 0 ]; then
-    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
   fi
 
@@ -410,7 +424,7 @@ AutoRemovePackages()
     rc=true
   fi
 
-  exec 1>&3 2>&4
+  RestoreFileDescriptors
 
   ${rc}
 }
@@ -443,7 +457,7 @@ InstallPackages()
 
   CommonArgs arg_list log_args $*
   if [ ${#arg_list[@]} -lt 1 ]; then
-    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
   fi
 
@@ -457,7 +471,7 @@ InstallPackages()
     rc=true
   fi
 
-  exec 1>&3 2>&4
+  RestoreFileDescriptors
 
   ${rc}
 }
@@ -472,7 +486,7 @@ Get_APT_GPG_Key()
 
   CommonArgs arg_list log_args $*
   if [ ${#arg_list[@]} -ne 2 ]; then
-    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    echo "ERROR: Incorrect parameters. Exiting" &3 2>&"${STDERR}"
     exit 1
   fi
 
@@ -488,7 +502,7 @@ Get_APT_GPG_Key()
     rc=true
   fi
 
-  exec 1>&3 2>&4
+  RestoreFileDescriptors
 
   ${rc}
 }
@@ -510,7 +524,7 @@ ServiceControl()
 
   CommonArgs arg_list log_args $*
   if [ ${#arg_list[@]} -ne 2 ]; then
-    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
   fi
 
@@ -526,7 +540,7 @@ ServiceControl()
     rc=true
   fi
 
-  exec 1>&3 2>&4
+  RestoreFileDescriptors
 
   ${rc}
 }
@@ -541,18 +555,17 @@ Service_WaitForLog()
   local max_wait_time=300
   local svc wait_string
 
-
   CommonArgs arg_list log_args $*
 
   if [ ${#arg_list[@]} -eq 2 ]; then
+    svc="${arg_list[0]}"
+    wait_string="${arg_list[1]}"
+  elif [ ${#arg_list[@]} -eq 3 ]; then
     max_wait_time="${arg_list[0]}"
     svc="${arg_list[1]}"
     wait_string="${arg_list[2]}"
-  elif [ ${#arg_list[@]} -eq 3 ]; then
-    svc="${arg_list[1]}"
-    wait_string="${arg_list[2]}"
   else
-    echo "ERROR: Incorrect parameters. Exiting" 1>&3 2>&4
+    echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
   fi
 
@@ -565,7 +578,7 @@ Service_WaitForLog()
     rc=true
   fi
 
-  exec 1>&3 2>&4
+  RestoreFileDescriptors
 
   ${rc}
 }

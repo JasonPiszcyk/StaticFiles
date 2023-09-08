@@ -484,6 +484,7 @@ PurgeSnaps
 Log -t "Applying Updates"
 UpdateAPTCache -l -t || exit 1
 ApplyUpdates -l -t || exit 1
+Log -t ""
 
 #
 # Make sure the packages we need are installed

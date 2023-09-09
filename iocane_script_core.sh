@@ -166,6 +166,58 @@ GenerateRandomString()
 }
 
 
+#############################################################################
+#
+# File/Directory Manipulation Functions
+#
+#############################################################################
+##############
+# CreateDirectory - Create a directory structure
+##############
+CreateDirectory()
+{
+  local rc=false
+  local arg_list log_args
+  local dir_to_create
+  local dir_owner="-"
+  local dir_mode="="
+  local install_args=""
+
+  CommonArgs arg_list log_args $*
+  if [ ${#arg_list[@]} -ne 3 ]; then
+    echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
+    exit 1
+  fi
+
+  if [ ${#arg_list[@]} -lt 1 -o ${#arg_list[@]} -gt 3 ]; then
+    echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
+    exit 1
+  fi
+
+  dir_to_create="${arg_list[0]}"
+  [ ${#arg_list[@]} -ge 2 ] && dir_owner="${arg_list[1]}"
+  [ ${#arg_list[@]} -ge 3 ] && dir_mode="${arg_list[2]}"
+
+  # Set the arguments for 'install'
+  [ "${dir_owner}" != "-" ] && install_args="${install_args} -o ${dir_owner}"
+  [ "${dir_mode}" != "-" ] && install_args="${install_args} -m ${dir_mode}"
+  
+  install -d ${dir_to_create} ${install_args} 
+  if [ $? -ne 0 ]; then
+    Log ${log_args} "ERROR: Unable to create directory"
+    Log ${log_args} "ERROR: Directory: >${dir_to_create}<"
+    Log ${log_args} "ERROR: Owner: >${dir_owner}<"
+    Log ${log_args} "ERROR: Mode: >${dir_mode}<"
+  else
+    rc=true
+  fi
+
+  RestoreFileDescriptors
+
+  ${rc}
+}
+
+
 ##############
 # RemoveFile - Remove a file if it exists
 ##############
@@ -320,7 +372,7 @@ SedFile()
   local arg_list log_args
   local sed_cmd target_file
 
-  CommonArgs arg_list log_args $*
+  CommonArgs arg_list log_args "$*"
   if [ ${#arg_list[@]} -ne 2 ]; then
     echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
@@ -555,19 +607,16 @@ Service_WaitForLog()
   local max_wait_time=300
   local svc wait_string
 
-  CommonArgs arg_list log_args $*
+  CommonArgs arg_list log_args "$*"
 
-  if [ ${#arg_list[@]} -eq 2 ]; then
-    svc="${arg_list[0]}"
-    wait_string="${arg_list[1]}"
-  elif [ ${#arg_list[@]} -eq 3 ]; then
-    max_wait_time="${arg_list[0]}"
-    svc="${arg_list[1]}"
-    wait_string="${arg_list[2]}"
-  else
+  if [ ${#arg_list[@]} -lt 2 -o ${#arg_list[@]} -gt 3 ]; then
     echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
   fi
+
+  svc="${arg_list[0]}"
+  wait_string="${arg_list[1]}"
+  [ ${#arg_list[@]} -ge 3 ] && max_wait_time="${arg_list[2]}"
 
   if [ ${max_wait_time} -le 0 ]; then
     bash -c "journalctl -u ${svc} -f --no-pager | grep -q \"${wait_string}\" "

@@ -176,7 +176,8 @@ ConfigureFirewall()
   fi
 
   Log "\nUFW: Restart"
-  if ! ufw disable && ufw --force enable >> ${LOGFILE} 2>&1 ; then
+  ufw disable && ufw --force enable >> ${LOGFILE} 2>&1
+  if [ $? -ne 0 ]; then
     Log -t "ERROR: Unable to restart UFW"
     exit 1
   else
@@ -386,6 +387,28 @@ __EOF
   Log "\nStackStorm: Configuring MongoDB user"
   SetIniEntry -l -t ${ST2_CONF} database username "${MONGO_STACKSTORM_USER}" || exit 1
   SetIniEntry -l -t ${ST2_CONF} database password "${MONGO_STACKSTORM_PASSWORD}" || exit 1
+
+  Log -t ""
+}
+
+
+##############
+# ConfigureAnsible - Set upo an Ansible Config
+##############
+InstallStackStorm()
+{
+  Log -t "Configuring Ansible"
+
+  Log "\nStackStorm: Configuring MongoDB user"
+  SetIniEntry -l -t ${ST2_CONF} database username "${MONGO_STACKSTORM_USER}" || exit 1
+  SetIniEntry -l -t ${ST2_CONF} database password "${MONGO_STACKSTORM_PASSWORD}" || exit 1
+
+mkdir -p /etc/ansible
+crudini --set /etc/ansible/ansible.cfg defaults host_key_checking 'False'
+crudini --set /etc/ansible/ansible.cfg defaults callbacks_enabled json
+crudini --set /etc/ansible/ansible.cfg defaults stdout_callback json
+crudini --set /etc/ansible/ansible.cfg defaults verbosity 0
+
 
   Log -t ""
 }

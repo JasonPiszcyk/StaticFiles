@@ -70,6 +70,11 @@ ST2_APT_SRCLIST=/etc/apt/sources.list.d/StackStorm_stable.list
 ST2_CONF=/etc/st2/st2.conf
 
 
+# Ansible Config
+ANSIBLE_CONF_DIR=/etc/ansible
+ANSIBLE_CONF=${ANSIBLE_CONF_DIR}/ansible.cfg
+
+
 #############################################################################
 #
 # Util Functions - Functions used throughout script
@@ -395,20 +400,18 @@ __EOF
 ##############
 # ConfigureAnsible - Set upo an Ansible Config
 ##############
-InstallStackStorm()
+ConfigureAnsible()
 {
   Log -t "Configuring Ansible"
 
-  Log "\nStackStorm: Configuring MongoDB user"
-  SetIniEntry -l -t ${ST2_CONF} database username "${MONGO_STACKSTORM_USER}" || exit 1
-  SetIniEntry -l -t ${ST2_CONF} database password "${MONGO_STACKSTORM_PASSWORD}" || exit 1
+  Log "\nAnsible: Creating config directory"
+  CreateDirectory -l -t ${ANSIBLE_CONF_DIR} || exit 1
 
-mkdir -p /etc/ansible
-crudini --set /etc/ansible/ansible.cfg defaults host_key_checking 'False'
-crudini --set /etc/ansible/ansible.cfg defaults callbacks_enabled json
-crudini --set /etc/ansible/ansible.cfg defaults stdout_callback json
-crudini --set /etc/ansible/ansible.cfg defaults verbosity 0
-
+  Log "\nAnsible: Setting config entries"
+  SetIniEntry -l -t ${ANSIBLE_CONF} defaults host_key_checking 'False' || exit 1
+  SetIniEntry -l -t ${ANSIBLE_CONF} defaults callbacks_enabled json || exit 1
+  SetIniEntry -l -t ${ANSIBLE_CONF} defaults stdout_callback json || exit 1
+  SetIniEntry -l -t ${ANSIBLE_CONF} defaults verbosity 0 || exit 1
 
   Log -t ""
 }
@@ -536,6 +539,11 @@ InstallRabbitMQ
 # Install StackStorm
 #
 InstallStackStorm
+
+#
+# Configure Ansible
+#
+ConfigureAnsible
 
 #
 # Apply any outstanding updates and remove unused packages

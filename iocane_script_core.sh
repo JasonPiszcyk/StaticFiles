@@ -92,12 +92,12 @@ CommonArgs()
         ;;
 
       -t)       # If we call Log, send output to both log and terminal
-        common_args_log_args="${log_args} -t"
+        common_args_log_args="${common_args_log_args} -t"
         shift
         ;;
 
       -d)       # If we call Log, display a date/timestamp prefix
-        common_args_log_args="${log_args} -d"
+        common_args_log_args="${common_args_log_args} -d"
         shift
         ;;
 
@@ -183,7 +183,7 @@ CreateDirectory()
   local dir_mode="="
   local install_args=""
 
-  CommonArgs arg_list log_args $*
+  CommonArgs arg_list log_args "$@"
   if [ ${#arg_list[@]} -ne 3 ]; then
     echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
@@ -227,7 +227,7 @@ RemoveFile()
   local arg_list log_args
   local file_to_delete
 
-  CommonArgs arg_list log_args $*
+  CommonArgs arg_list log_args "$@"
   if [ ${#arg_list[@]} -ne 1 ]; then
     echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
@@ -263,7 +263,7 @@ CopyFile()
   local arg_list log_args
   local src dest
 
-  CommonArgs arg_list log_args $*
+  CommonArgs arg_list log_args "$@"
   if [ ${#arg_list[@]} -ne 2 ]; then
     echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
@@ -301,7 +301,7 @@ SetIniEntry()
   local arg_list log_args
   local ini_file ini_section ini_param ini_value
 
-  CommonArgs arg_list log_args $*
+  CommonArgs arg_list log_args "$@"
   if [ ${#arg_list[@]} -ne 4 ]; then
     echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
@@ -337,7 +337,7 @@ DelIniEntry()
   local arg_list log_args
   local ini_file ini_section ini_param
 
-  CommonArgs arg_list log_args $*
+  CommonArgs arg_list log_args "$@"
   if [ ${#arg_list[@]} -ne 3 ]; then
     echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
@@ -372,7 +372,7 @@ SedFile()
   local arg_list log_args
   local sed_cmd target_file
 
-  CommonArgs arg_list log_args "$*"
+  CommonArgs arg_list log_args "$@"
   if [ ${#arg_list[@]} -ne 2 ]; then
     echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
@@ -409,7 +409,7 @@ UpdateAPTCache()
   local rc=false
   local arg_list log_args
 
-  CommonArgs arg_list log_args $*
+  CommonArgs arg_list log_args "$@"
   if [ ${#arg_list[@]} -ne 0 ]; then
     echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
@@ -436,7 +436,7 @@ ApplyUpdates()
   local rc=false
   local arg_list log_args
 
-  CommonArgs arg_list log_args $*
+  CommonArgs arg_list log_args "$@"
   if [ ${#arg_list[@]} -ne 0 ]; then
     echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
@@ -463,7 +463,7 @@ AutoRemovePackages()
   local rc=false
   local arg_list log_args
 
-  CommonArgs arg_list log_args $*
+  CommonArgs arg_list log_args "$@"
   if [ ${#arg_list[@]} -ne 0 ]; then
     echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
@@ -507,7 +507,7 @@ InstallPackages()
   local rc=false
   local arg_list log_args
 
-  CommonArgs arg_list log_args $*
+  CommonArgs arg_list log_args "$@"
   if [ ${#arg_list[@]} -lt 1 ]; then
     echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
@@ -536,7 +536,7 @@ Get_APT_GPG_Key()
   local rc=false
   local arg_list log_args
 
-  CommonArgs arg_list log_args $*
+  CommonArgs arg_list log_args "$@"
   if [ ${#arg_list[@]} -ne 2 ]; then
     echo "ERROR: Incorrect parameters. Exiting" &3 2>&"${STDERR}"
     exit 1
@@ -574,7 +574,7 @@ ServiceControl()
   local arg_list log_args
   local cmd svc
 
-  CommonArgs arg_list log_args $*
+  CommonArgs arg_list log_args "$@"
   if [ ${#arg_list[@]} -ne 2 ]; then
     echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
@@ -607,7 +607,7 @@ Service_WaitForLog()
   local max_wait_time=300
   local svc wait_string
 
-  CommonArgs arg_list log_args "$*"
+  CommonArgs arg_list log_args "$@"
 
   if [ ${#arg_list[@]} -lt 2 -o ${#arg_list[@]} -gt 3 ]; then
     echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"

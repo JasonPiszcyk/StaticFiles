@@ -231,6 +231,9 @@ __EOF
     exit 1
   fi
 
+  # Need to wait a bit for the service to allow connections
+  sleep 30
+
   Log "\nMongoDB: Increasing Sort Memory"
   mongo << __EOF
 db.adminCommand({

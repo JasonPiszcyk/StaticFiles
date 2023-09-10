@@ -235,7 +235,7 @@ __EOF
   sleep 30
 
   Log "\nMongoDB: Increasing Sort Memory"
-  mongo << __EOF
+  mongo << __EOF >> ${LOGFILE} 2>&1
 db.adminCommand({
     "setParameter": 1,
     "internalQueryMaxBlockingSortMemoryUsageBytes": ${MONGO_SORT_MEM_SIZE}
@@ -247,7 +247,7 @@ __EOF
   fi
 
   Log "\nMongoDB: Creating Admin user"
-  mongo << __EOF
+  mongo << __EOF >> ${LOGFILE} 2>&1
 use admin;
 db.createUser({
     user: "${MONGO_ADMIN_USER}",
@@ -264,7 +264,7 @@ __EOF
   fi
 
   Log "\nMongoDB: Creating Stackstorm user"
-  mongo << __EOF
+  mongo << __EOF >> ${LOGFILE} 2>&1
 use st2;
 db.createUser({
     user: "${MONGO_STACKSTORM_USER}",

@@ -184,11 +184,6 @@ CreateDirectory()
   local install_args=""
 
   CommonArgs arg_list log_args "$@"
-  if [ ${#arg_list[@]} -ne 3 ]; then
-    echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
-    exit 1
-  fi
-
   if [ ${#arg_list[@]} -lt 1 -o ${#arg_list[@]} -gt 3 ]; then
     echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1

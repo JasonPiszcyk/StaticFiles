@@ -520,7 +520,7 @@ Log -t ""
 #
 Log -t "Installing Required Packages"
 Log -t "-----------------------------"
-InstallPackages -l -t ca-certificates gnupg crudini ufw || exit 1
+InstallPackages -l -t ca-certificates gnupg crudini ufw python3-pip || exit 1
 Log -t ""
 
 Log -t "Installing Required Python Packages"

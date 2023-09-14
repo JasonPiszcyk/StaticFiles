@@ -523,6 +523,7 @@ InstallPackages()
   ${rc}
 }
 
+
 ##############
 # Get_APT_GPG_Key - Get and store the APT GPG key for a package
 ##############
@@ -545,6 +546,36 @@ Get_APT_GPG_Key()
     Log ${log_args} "ERROR: Unable to download and store GPG key."
     Log ${log_args} "ERROR: URL: >${gpg_key_url}<"
     Log ${log_args} "ERROR: Keyring: >${gpg_key_ring}<"
+  else
+    rc=true
+  fi
+
+  RestoreFileDescriptors
+
+  ${rc}
+}
+
+
+##############
+# InstallPIP - Install python packages
+##############
+InstallPIP()
+{
+  local rc=false
+  local arg_list log_args
+
+  CommonArgs arg_list log_args "$@"
+  if [ ${#arg_list[@]} -ne 2 ]; then
+    echo "ERROR: Incorrect parameters. Exiting" &3 2>&"${STDERR}"
+    exit 1
+  fi
+
+  local package_list="${arg_list[*]}"
+
+  pip3 install ${package_list}
+  if [ $? -ne 0 ]; then
+    Log ${log_args} "ERROR: A problem occurred when trying to install python packages:"
+    Log ${log_args} "ERROR: Package List: >${package_list}<"
   else
     rc=true
   fi

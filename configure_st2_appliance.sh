@@ -523,6 +523,11 @@ Log -t "-----------------------------"
 InstallPackages -l -t ca-certificates gnupg crudini ufw || exit 1
 Log -t ""
 
+Log -t "Installing Required Python Packages"
+Log -t "------------------------------------"
+InstallPIP -l -t textual || exit 1
+Log -t ""
+
 #
 # Set up firewall
 #

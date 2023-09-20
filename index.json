@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1694855957,
-        "hash": "61a4bb54c8caddca9e3df3124c1f772c"
+        "generated_ts": 1695189572,
+        "hash": "8baee95a738e65ec197e4d72bd6da271"
     },
     "packs": {
         "iocane": {
@@ -237,7 +237,7 @@
             "email": "Jason@Piszcyk.com",
             "name": "sysadm",
             "repo_url": "git@github.com-StackStorm-Sysadm:JasonPiszcyk/StackStorm-Sysadm",
-            "version": "2.0.7"
+            "version": "2.0.8"
         },
         "winadmin": {
             "author": "Jason Piszcyk",

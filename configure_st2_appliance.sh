@@ -19,8 +19,9 @@ LongOptList="help:"
 # Override PROG as this will be set to a temporary name based on how we are run!
 PROG="configure_st2_appliance"
 
-# Call in the Iocane core script which has our functions, standard evn variables, etc
-source <(curl -sSL https://raw.githubusercontent.com/JasonPiszcyk/StaticFiles/main/iocane_script_core.sh)
+# Call in the Iocane core script which has our functions, standard env variables, etc
+# source <(curl -sSL https://raw.githubusercontent.com/JasonPiszcyk/StaticFiles/main/iocane_script_core.sh)
+source /cdrom/iocane_script_core.sh
 
 
 # MongoDB Info
@@ -68,6 +69,7 @@ ST2_KEYRING=${KEYRING_DIR}/StackStorm_stable-archive-keyring.gpg
 ST2_APT_SRCLIST=/etc/apt/sources.list.d/StackStorm_stable.list
 
 ST2_CONF=/etc/st2/st2.conf
+ST2_PACK_PATH='https://raw.githubusercontent.com/JasonPiszcyk/StaticFiles/main/index.json,https://index.stackstorm.org/v1/index.json'
 
 
 # Ansible Config
@@ -379,7 +381,7 @@ __EOF
 
   Log "\nStackStorm: Installing Packages"
   InstallPackages -l -t st2 st2web nginx libldap2-dev libsasl2-dev ldap-utils || exit 1
-  InstallPackages -l -t gcc libkrb5-dev || exit 1
+  InstallPackages -l -t apache2-utils gcc libkrb5-dev || exit 1
 
   Log "\nStackStorm: Updating Config File"
   SetIniEntry -l -t ${ST2_CONF} garbagecollector purge_inquiries 'True' || exit 1
@@ -395,6 +397,20 @@ __EOF
   Log "\nStackStorm: Configuring MongoDB user"
   SetIniEntry -l -t ${ST2_CONF} database username "${MONGO_STACKSTORM_USER}" || exit 1
   SetIniEntry -l -t ${ST2_CONF} database password "${MONGO_STACKSTORM_PASSWORD}" || exit 1
+
+  Log "\nStackStorm: Configuring package path"
+  SetIniEntry -l -t ${ST2_CONF} content index_url "${ST2_PACK_PATH}" || exit 1
+
+  Log "\nStackStorm: Registering packs"
+  if ! st2ctl reload --register-all >> ${LOGFILE} 2>&1 ; then
+    Log -t "ERROR: StackStorm: Registering packs"
+    exit 1
+  fi
+
+  Log "\nStackStorm: Setting up command line access"
+  echo "[credentials]" > /root/.st2/config
+  echo "api_key = $(st2 apikey create -k)" >> /root/.st2/config
+  chmod 640 /root/.st2/config
 
   Log -t ""
 }
@@ -513,6 +529,15 @@ PurgeSnaps
 Log -t "Applying Updates"
 UpdateAPTCache -l -t || exit 1
 ApplyUpdates -l -t || exit 1
+Log -t ""
+
+#
+# Copy our files from the ISO
+#
+Log -t "Copy files from ISO Image"
+CreateDirectory -l -t /usr/local/opt root 0755 || exit 1
+CopyDir -l -t /cdrom/.ssh /root || exit 1
+CopyDir -l -t /cdrom/App-Console /usr/local/opt || exit 1
 Log -t ""
 
 #

@@ -288,6 +288,44 @@ CopyFile()
 
 
 ##############
+# CopyDir - Copy a directory tree 
+##############
+CopyDir()
+{
+  local rc=false
+  local arg_list log_args
+  local src dest
+
+  CommonArgs arg_list log_args "$@"
+  if [ ${#arg_list[@]} -ne 2 ]; then
+    echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
+    exit 1
+  fi
+
+  src="${arg_list[0]}"
+  dest="${arg_list[1]}"
+
+  if [ -e ${src} ]; then
+    cp -r ${src} ${dest}
+  else
+    true
+  fi
+
+  if [ $? -ne 0 ]; then
+    Log ${log_args} "ERROR: Unable to copy directory"
+    Log ${log_args} "ERROR: Source Dir: >${src}<"
+    Log ${log_args} "ERROR: Destination Dir: >${dest}<"
+  else
+    rc=true
+  fi
+  
+  RestoreFileDescriptors
+
+  ${rc}
+}
+
+
+##############
 # SetIniEntry - Set an entry in an ini file
 ##############
 SetIniEntry()
@@ -565,7 +603,7 @@ InstallPIP()
   local arg_list log_args
 
   CommonArgs arg_list log_args "$@"
-  if [ ${#arg_list[@]} -ne 2 ]; then
+  if [ ${#arg_list[@]} -lt 1 ]; then
     echo "ERROR: Incorrect parameters. Exiting" &3 2>&"${STDERR}"
     exit 1
   fi

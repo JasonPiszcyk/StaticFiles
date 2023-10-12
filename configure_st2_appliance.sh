@@ -561,6 +561,11 @@ UpdateAPTCache -l -t || exit 1
 ApplyUpdates -l -t || exit 1
 AutoRemovePackages -l -t || exit 1
 
+#
+# Set the flag for first run on the console
+#
+touch /.app_console_first_run
+
 # All done
 Log -t ""
 Log -t "*************************************************************************"

@@ -23,6 +23,9 @@ PROG="configure_st2_appliance"
 # source <(curl -sSL https://raw.githubusercontent.com/JasonPiszcyk/StaticFiles/main/iocane_script_core.sh)
 source /cdrom/iocane_script_core.sh
 
+# Config directory to store any config info
+CONSOLE_CONFIG_DIR=/data/config
+
 
 # MongoDB Info
 MONGO_KEY_URL=https://www.mongodb.org/static/pgp/server-4.4.asc
@@ -75,6 +78,28 @@ ST2_PACK_PATH='https://raw.githubusercontent.com/JasonPiszcyk/StaticFiles/main/i
 # Ansible Config
 ANSIBLE_CONF_DIR=/etc/ansible
 ANSIBLE_CONF=${ANSIBLE_CONF_DIR}/ansible.cfg
+
+
+# File Transfer Server Info
+TRANSFER_EXE=/usr/local/bin/servefile
+TRANSFER_CONFIG=${CONSOLE_CONFIG_DIR}/servefile.cfg
+
+TRANSFER_DOWNLOAD_DIR=/data/download
+TRANSFER_UPLOAD_DIR=/data/upload
+
+TRANSFER_DOWNLOAD_SVC=/etc/systemd/system/servefile-download.service
+TRANSFER_UPLOAD_SVC=/etc/systemd/system/servefile-upload.service
+
+TRANSFER_DOWNLOAD_PORT=8080
+TRANSFER_UPLOAD_PORT=8081
+
+TRANSFER_UPLOAD_SIZE="10MB"
+
+TRANSFER_DOWNLOAD_USER=iocane
+TRANSFER_DOWNLOAD_PASSWORD="$(GenerateRandomString)"
+
+TRANSFER_UPLOAD_USER=iocane
+TRANSFER_UPLOAD_PASSWORD="$(GenerateRandomString)"
 
 
 #############################################################################
@@ -417,7 +442,7 @@ __EOF
 
 
 ##############
-# ConfigureAnsible - Set upo an Ansible Config
+# ConfigureAnsible - Set up an Ansible Config
 ##############
 ConfigureAnsible()
 {
@@ -431,6 +456,89 @@ ConfigureAnsible()
   SetIniEntry -l -t ${ANSIBLE_CONF} defaults callbacks_enabled json || exit 1
   SetIniEntry -l -t ${ANSIBLE_CONF} defaults stdout_callback json || exit 1
   SetIniEntry -l -t ${ANSIBLE_CONF} defaults verbosity 0 || exit 1
+
+  Log -t ""
+}
+
+
+##############
+# ConfigureFileTransfer - Set up basic HTTP file transfers
+##############
+ConfigureFileTransfer()
+{
+  Log -t "Configuring File Transfer Server"
+
+  Log "\nFile Transfer SZerver: Creating directories"
+  CreateDirectory -l -t ${TRANSFER_DOWNLOAD_DIR} iocane 0755 || exit 1
+  CreateDirectory -l -t ${TRANSFER_UPLOAD_DIR} iocane 0755 || exit 1
+
+  Log "\nAnsible: Creating Config file"
+  cat - << __EOF > ${TRANSFER_CONFIG}
+#
+# Servefile services config
+#
+
+# Authentiction info
+DOWNLOAD_USER="${TRANSFER_DOWNLOAD_USER}"
+DOWNLOAD_PASSWORD="${TRANSFER_DOWNLOAD_PASSWORD}"
+
+UPLOAD_USER="${TRANSFER_UPLOAD_USER}"
+UPLOAD_PASSWORD="${TRANSFER_UPLOAD_PASSWORD}"
+
+# Upload file size restriction
+UPLOAD_SIZE="${TRANSFER_UPLOAD_SIZE}"
+
+# Ports used by the services
+DOWNLOAD_PORT=${TRANSFER_DOWNLOAD_PORT}
+UPLOAD_PORT=${TRANSFER_UPLOAD_PORT}
+
+__EOF
+
+  chmod 600 ${TRANSFER_CONFIG}
+
+
+  Log "\nAnsible: Creating download server"
+  cat - << __EOF > ${TRANSFER_DOWNLOAD_SVC}
+[Unit]
+Description=Servefile download server
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+EnvironmentFile=-${TRANSFER_CONFIG}
+User=iocane
+ExecStart=${TRANSFER_EXE} -l -a \${DOWNLOAD_USER}:\${DOWNLOAD_PASSWORD} -p ${TRANSFER_DOWNLOAD_PORT} ${TRANSFER_DOWNLOAD_DIR}
+
+[Install]
+WantedBy=multi-user.target
+__EOF
+
+  chmod 600 ${TRANSFER_DOWNLOAD_SVC}
+
+  Log "\nAnsible: Creating upload server"
+  cat - << __EOF > ${TRANSFER_UPLOAD_SVC}
+[Unit]
+Description=Servefile upload server
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+EnvironmentFile=-${TRANSFER_CONFIG}
+User=iocane
+ExecStart=${TRANSFER_EXE} -u -a \${UPLOAD_USER}:\${UPLOAD_PASSWORD} -s \${UPLOAD_SIZE} -p ${TRANSFER_UPLOAD_PORT} ${TRANSFER_UPLOAD_DIR}
+
+[Install]
+WantedBy=multi-user.target
+__EOF
+
+  chmod 600 ${TRANSFER_UPLOAD_SVC}
+
 
   Log -t ""
 }
@@ -532,6 +640,16 @@ ApplyUpdates -l -t || exit 1
 Log -t ""
 
 #
+# Create a config directory
+#
+Log -t "Creating Config Directory"
+CreateDirectory -l -t ${CONSOLE_CONFIG_DIR} root 0700 || exit 1
+CopyDir -l -t /cdrom/.ssh /root || exit 1
+CopyDir -l -t /cdrom/App-Console /usr/local/opt || exit 1
+Log -t ""
+
+
+#
 # Copy our files from the ISO
 #
 Log -t "Copy files from ISO Image"
@@ -550,7 +668,7 @@ Log -t ""
 
 Log -t "Installing Required Python Packages"
 Log -t "------------------------------------"
-InstallPIP -l -t textual || exit 1
+InstallPIP -l -t textual servefile || exit 1
 Log -t ""
 
 #
@@ -577,6 +695,11 @@ InstallStackStorm
 # Configure Ansible
 #
 ConfigureAnsible
+
+#
+# Set up the file transfer service
+#
+ConfigureFileTransfer
 
 #
 # Apply any outstanding updates and remove unused packages

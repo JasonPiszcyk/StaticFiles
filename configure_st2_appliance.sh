@@ -468,7 +468,7 @@ ConfigureFileTransfer()
 {
   Log -t "Configuring File Transfer Server"
 
-  Log "\nFile Transfer SZerver: Creating directories"
+  Log "\nFile Transfer Server: Creating directories"
   CreateDirectory -l -t ${TRANSFER_DOWNLOAD_DIR} iocane 0755 || exit 1
   CreateDirectory -l -t ${TRANSFER_UPLOAD_DIR} iocane 0755 || exit 1
 

@@ -156,12 +156,12 @@ GenerateRandomString()
     strlen=${1}
   fi
 
-  # We generate 256 random chars for weach character we want, to make sure we get enough
+  # We generate 256 random chars for each character we want, to make sure we get enough
   # alphanumeric characters in the string 
   bytecount=$(( $strlen * 256 ))
 
   # Get a bunch of random chars - we ignore everything but alphanumerics as special chars (such
-  # as '*' or '%') give problems when used as passswords
+  # as '*' or '%') can give problems when used as passwords
   dd if=/dev/random count=${bytecount} bs=1 status=none | tr -dc '[:alnum:]' | cut -b1-${strlen}
 }
 

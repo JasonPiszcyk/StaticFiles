@@ -437,6 +437,11 @@ __EOF
   echo "api_key = $(st2 apikey create -k)" >> /root/.st2/config
   chmod 640 /root/.st2/config
 
+  Log -t "Creating SSH User Key Directory"
+  CreateDirectory -l -t /home/stanley/.ssh stanley 0700 || exit 1
+  touch /home/stanley/.ssh/authorized_keys
+  chmod 640 /home/stanley/.ssh/authorized_keys
+
   Log -t ""
 }
 
@@ -510,6 +515,12 @@ Restart=always
 RestartSec=5
 EnvironmentFile=-${TRANSFER_CONFIG}
 User=iocane
+
+# Clean the directory before starting
+PermissionsStartOnly=true
+ExecStartPre=-/usr/bin/rm -rf ${TRANSFER_DOWNLOAD_DIR}
+ExecStartPre=/usr/bin/install -d ${TRANSFER_DOWNLOAD_DIR} -o iocane -m 0755
+
 ExecStart=${TRANSFER_EXE} -l -a \${DOWNLOAD_USER}:\${DOWNLOAD_PASSWORD} -p ${TRANSFER_DOWNLOAD_PORT} ${TRANSFER_DOWNLOAD_DIR}
 
 [Install]
@@ -531,6 +542,12 @@ Restart=always
 RestartSec=5
 EnvironmentFile=-${TRANSFER_CONFIG}
 User=iocane
+
+# Clean the directory before starting
+PermissionsStartOnly=true
+ExecStartPre=-/usr/bin/rm -rf ${TRANSFER_UPLOAD_DIR}
+ExecStartPre=/usr/bin/install -d ${TRANSFER_UPLOAD_DIR} -o iocane -m 0755
+
 ExecStart=${TRANSFER_EXE} -u -a \${UPLOAD_USER}:\${UPLOAD_PASSWORD} -s \${UPLOAD_SIZE} -p ${TRANSFER_UPLOAD_PORT} ${TRANSFER_UPLOAD_DIR}
 
 [Install]

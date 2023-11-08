@@ -11,9 +11,12 @@
 #
 # Copyright (c) 2023 Iocane Pty Ltd
 #
+# Ignore shellcheck checking on certain things in this file
+# shellcheck disable=SC2034,SC2086,SC2181
+#
 
 # Standard Environment variables
-PROG=${PROG:-$(basename $0)}
+PROG="${PROG:-$(basename "${0}")}"
 
 # File/Directory locations
 LOGFILE=/tmp/${PROG}.log
@@ -87,7 +90,7 @@ CommonArgs()
   while [ $# -gt 0 ]; do
     case "${1}" in
       -l)       # Send output to logfile rather than terminal
-        exec &>> ${LOGFILE}
+        exec &>> "${LOGFILE}"
         shift
         ;;
 
@@ -119,13 +122,13 @@ Log()
   while [ $# -gt 0 ]; do
     case "${1}" in
       -c)       # Clear the log file
-        RemoveFile ${LOGFILE}
-        echo -n "" > ${LOGFILE}
+        RemoveFile "${LOGFILE}"
+        echo -n "" > "${LOGFILE}"
         shift
         ;;
 
       -d)       # Display a date/timestamp prefix
-        echo -n "$(date +"%H:%M:%S %d/%m/%Y"): " &>> ${LOGFILE}
+        echo -n "$(date +"%H:%M:%S %d/%m/%Y"): " &>> "${LOGFILE}"
         shift
         ;;
 
@@ -140,7 +143,7 @@ Log()
     esac
   done
 
-  echo -e "$*" &>> ${LOGFILE}
+  echo -e "$*" &>> "${LOGFILE}"
 }
 
 
@@ -158,7 +161,7 @@ GenerateRandomString()
 
   # We generate 256 random chars for each character we want, to make sure we get enough
   # alphanumeric characters in the string 
-  bytecount=$(( $strlen * 256 ))
+  bytecount=$(( strlen * 256 ))
 
   # Get a bunch of random chars - we ignore everything but alphanumerics as special chars (such
   # as '*' or '%') can give problems when used as passwords
@@ -184,7 +187,7 @@ CreateDirectory()
   local install_args=""
 
   CommonArgs arg_list log_args "$@"
-  if [ ${#arg_list[@]} -lt 1 -o ${#arg_list[@]} -gt 3 ]; then
+  if [ ${#arg_list[@]} -lt 1 ] || [ ${#arg_list[@]} -gt 3 ]; then
     echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
   fi
@@ -197,8 +200,7 @@ CreateDirectory()
   [ "${dir_owner}" != "-" ] && install_args="${install_args} -o ${dir_owner}"
   [ "${dir_mode}" != "-" ] && install_args="${install_args} -m ${dir_mode}"
   
-  install -d ${dir_to_create} ${install_args} 
-  if [ $? -ne 0 ]; then
+  if ! install -d "${dir_to_create}" "${install_args}"; then
     Log ${log_args} "ERROR: Unable to create directory"
     Log ${log_args} "ERROR: Directory: >${dir_to_create}<"
     Log ${log_args} "ERROR: Owner: >${dir_owner}<"
@@ -230,8 +232,8 @@ RemoveFile()
 
   file_to_delete="${arg_list[0]}"
 
-  if [ -f ${file_to_delete} ]; then
-    rm -f ${file_to_delete}
+  if [ -f "${file_to_delete}" ]; then
+    rm -f "${file_to_delete}"
   else
     true
   fi
@@ -267,8 +269,8 @@ CopyFile()
   src="${arg_list[0]}"
   dest="${arg_list[1]}"
 
-  if [ -e ${src} ]; then
-    cp ${src} ${dest}
+  if [ -e "${src}" ]; then
+    cp "${src}" "${dest}"
   else
     true
   fi
@@ -305,8 +307,8 @@ CopyDir()
   src="${arg_list[0]}"
   dest="${arg_list[1]}"
 
-  if [ -e ${src} ]; then
-    cp -r ${src} ${dest}
+  if [ -e "${src}" ]; then
+    cp -r "${src}" "${dest}"
   else
     true
   fi
@@ -345,8 +347,7 @@ SetIniEntry()
   ini_param="${arg_list[2]}"
   ini_value="${arg_list[3]}"
 
-  crudini --set "${ini_file}" "${ini_section}" "${ini_param}" "${ini_value}"
-  if [ $? -ne 0 ]; then
+  if ! crudini --set "${ini_file}" "${ini_section}" "${ini_param}" "${ini_value}"; then
     Log ${log_args} "ERROR: Unable to set entry in INI file"
     Log ${log_args} "ERROR: INI File: >${ini_file}<"
     Log ${log_args} "ERROR: Section: >${ini_section}<"
@@ -380,8 +381,7 @@ DelIniEntry()
   ini_section="${arg_list[1]}"
   ini_param="${arg_list[2]}"
 
-  crudini --del "${ini_file}" "${ini_section}" "${ini_param}"
-  if [ $? -ne 0 ]; then
+  if ! crudini --del "${ini_file}" "${ini_section}" "${ini_param}"; then
     Log ${log_args} "ERROR: Unable to delete entry from INI file"
     Log ${log_args} "ERROR: INI File: >${ini_file}<"
     Log ${log_args} "ERROR: Section: >${ini_section}<"
@@ -414,8 +414,7 @@ SedFile()
   sed_cmd="${arg_list[0]}"
   target_file="${arg_list[1]}"
 
-  sed -i "${sed_cmd}" ${target_file}
-  if [ $? -ne 0 ]; then
+  if ! sed -i "${sed_cmd}" "${target_file}"; then
     Log ${log_args} "ERROR: Unable to edit file via sed"
     Log ${log_args} "ERROR: Target File: >${target_file}<"
     Log ${log_args} "ERROR: sed command: >${sed_cmd}<"
@@ -448,8 +447,7 @@ UpdateAPTCache()
     exit 1
   fi
 
-  apt-get -q update
-  if [ $? -ne 0 ]; then
+  if ! apt-get -q update ; then
     Log ${log_args} "ERROR: Unable to update APT cache"
   else
     rc=true
@@ -475,8 +473,7 @@ ApplyUpdates()
     exit 1
   fi
 
-  apt-get -q -y upgrade
-  if [ $? -ne 0 ]; then
+  if ! apt-get -q -y upgrade; then
     Log ${log_args} "ERROR: Unable to apply updates"
   else
     rc=true
@@ -502,8 +499,7 @@ AutoRemovePackages()
     exit 1
   fi
 
-  apt-get -q -y autoremove
-  if [ $? -ne 0 ]; then
+  if ! apt-get -q -y autoremove ; then
     Log ${log_args} "ERROR: Unable to automatically remove unused packages"
   else
     rc=true
@@ -524,8 +520,7 @@ IsPackageInstalled()
   packages_installed=true
 
   for pkg in ${package_list}; do
-    dpkg -s "${pkg}" > /dev/null 2>&1
-    [ $? -eq 0 ] || packages_installed=false
+    dpkg -s "${pkg}" > /dev/null 2>&1 || packages_installed=false
   done
 
   ${packages_installed}
@@ -548,8 +543,7 @@ InstallPackages()
 
   local package_list="${arg_list[*]}"
 
-  apt-get -qq -y install ${package_list}
-  if [ $? -ne 0 ]; then
+  if ! apt-get -qq -y install "${package_list}" ; then 
     Log ${log_args} "ERROR: A problem occurred when trying to install packages:"
     Log ${log_args} "ERROR: Package List: >${package_list}<"
   else
@@ -579,8 +573,7 @@ Get_APT_GPG_Key()
   local gpg_key_url="${arg_list[0]}"
   local gpg_key_ring="${arg_list[1]}"
 
-  curl -1sLf "${gpg_key_url}" | gpg --dearmor -o ${gpg_key_ring}
-  if [ $? -ne 0 ]; then
+  if ! curl -1sLf "${gpg_key_url}" | gpg --dearmor -o "${gpg_key_ring}"; then
     Log ${log_args} "ERROR: Unable to download and store GPG key."
     Log ${log_args} "ERROR: URL: >${gpg_key_url}<"
     Log ${log_args} "ERROR: Keyring: >${gpg_key_ring}<"
@@ -610,8 +603,7 @@ InstallPIP()
 
   local package_list="${arg_list[*]}"
 
-  pip3 install ${package_list}
-  if [ $? -ne 0 ]; then
+  if ! pip3 install "${package_list}"; then
     Log ${log_args} "ERROR: A problem occurred when trying to install python packages:"
     Log ${log_args} "ERROR: Package List: >${package_list}<"
   else
@@ -647,8 +639,7 @@ ServiceControl()
   cmd="${arg_list[0]}"
   svc="${arg_list[1]}"
 
-  systemctl ${cmd} ${svc}
-  if [ $? -ne 0 ]; then
+  if ! systemctl "${cmd}" "${svc}" ; then
     Log ${log_args} "ERROR: Unable to perform command on service"
     Log ${log_args} "ERROR: CMD: >${cmd}<"
     Log ${log_args} "ERROR: Service: >${svc}<"
@@ -660,6 +651,7 @@ ServiceControl()
 
   ${rc}
 }
+
 
 ##############
 # Service_WaitForLog - Wait for an entry in the service log
@@ -673,7 +665,7 @@ Service_WaitForLog()
 
   CommonArgs arg_list log_args "$@"
 
-  if [ ${#arg_list[@]} -lt 2 -o ${#arg_list[@]} -gt 3 ]; then
+  if [ ${#arg_list[@]} -lt 2 ] || [ ${#arg_list[@]} -gt 3 ]; then
     echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
     exit 1
   fi
@@ -695,3 +687,105 @@ Service_WaitForLog()
 
   ${rc}
 }
+
+
+#############################################################################
+#
+# User Management Functions
+#
+#############################################################################
+##############
+# AddUser - Add a user to the system
+##############
+AddUser()
+{
+  local rc=false
+  local arg_list log_args
+  local username homedir comment shell
+
+  CommonArgs arg_list log_args "$@"
+  if [ ${#arg_list[@]} -le 0 ]; then
+    echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
+    exit 1
+  fi
+
+  homedir="-m"
+  comment=""
+  shell="-s /bin/bash"
+
+  x=0
+  while [ ${#arg_list[@]} -gt ${x}  ]; do
+    case "${arg_list[${x}]}" in
+      -c)       # Comment
+        (( x++ ))
+        comment="-c ${arg_list[${x}]}"
+        ;;
+
+      -h)       # Home Directory
+        (( x++ ))
+        homedir="-d ${arg_list[${x}]} -m"
+        ;;
+
+      -s)       # Shell
+        (( x++ ))
+        shell="-s ${arg_list[${x}]}"
+        ;;
+
+      *)        # End of parameters
+        # Username should be the last argument
+        username="${arg_list[${x}]}"
+        break
+        ;;
+    esac
+
+    (( x++ ))
+  done
+
+  if ! useradd "${comment}" "${homedir}" "${shell}" "${username}"; then
+    Log ${log_args} "ERROR: Unable to create user"
+    Log ${log_args} "ERROR: username: >${username}<"
+    Log ${log_args} "ERROR: shell: >${shell}<"
+    Log ${log_args} "ERROR: comment: >${comment}<"
+    Log ${log_args} "ERROR: homedir: >${homedir}<"
+  else
+    rc=true
+  fi
+
+  RestoreFileDescriptors
+
+  ${rc}
+}
+
+
+##############
+# SetUserPassword - Set a user password
+##############
+SetUserPassword()
+{
+  local rc=false
+  local arg_list log_args
+  local user password
+
+  CommonArgs arg_list log_args "$@"
+  if [ ${#arg_list[@]} -ne 2 ]; then
+    echo "ERROR: Incorrect parameters. Exiting" >&"${STDOUT}" 2>&"${STDERR}"
+    exit 1
+  fi
+
+  user="${arg_list[0]}"
+  password="${arg_list[1]}"
+
+  echo "${user}:${password}" | chpasswd
+  if [ $? -ne 0 ]; then
+    Log ${log_args} "ERROR: Unable to change user password"
+    Log ${log_args} "ERROR: User: >${cmd}<"
+    Log ${log_args} "ERROR: Password: >${svc}<"
+  else
+    rc=true
+  fi
+
+  RestoreFileDescriptors
+
+  ${rc}
+}
+

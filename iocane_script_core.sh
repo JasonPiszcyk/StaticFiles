@@ -200,7 +200,7 @@ CreateDirectory()
   [ "${dir_owner}" != "-" ] && install_args="${install_args} -o ${dir_owner}"
   [ "${dir_mode}" != "-" ] && install_args="${install_args} -m ${dir_mode}"
   
-  if ! install -d "${dir_to_create}" "${install_args}"; then
+  if ! install -d "${dir_to_create}" ${install_args}; then
     Log ${log_args} "ERROR: Unable to create directory"
     Log ${log_args} "ERROR: Directory: >${dir_to_create}<"
     Log ${log_args} "ERROR: Owner: >${dir_owner}<"
@@ -543,7 +543,7 @@ InstallPackages()
 
   local package_list="${arg_list[*]}"
 
-  if ! apt-get -qq -y install "${package_list}" ; then 
+  if ! apt-get -qq -y install ${package_list} ; then 
     Log ${log_args} "ERROR: A problem occurred when trying to install packages:"
     Log ${log_args} "ERROR: Package List: >${package_list}<"
   else
@@ -603,7 +603,7 @@ InstallPIP()
 
   local package_list="${arg_list[*]}"
 
-  if ! pip3 install "${package_list}"; then
+  if ! pip3 install ${package_list}; then
     Log ${log_args} "ERROR: A problem occurred when trying to install python packages:"
     Log ${log_args} "ERROR: Package List: >${package_list}<"
   else
@@ -709,26 +709,26 @@ AddUser()
     exit 1
   fi
 
-  homedir="-m"
-  comment=""
-  shell="-s /bin/bash"
+  homedir="/home/${username}"
+  comment="${username}"
+  shell="/bin/bash"
 
   x=0
   while [ ${#arg_list[@]} -gt ${x}  ]; do
     case "${arg_list[${x}]}" in
       -c)       # Comment
         (( x++ ))
-        comment="-c ${arg_list[${x}]}"
+        comment="${arg_list[${x}]}"
         ;;
 
       -h)       # Home Directory
         (( x++ ))
-        homedir="-d ${arg_list[${x}]} -m"
+        homedir="${arg_list[${x}]}"
         ;;
 
       -s)       # Shell
         (( x++ ))
-        shell="-s ${arg_list[${x}]}"
+        shell="${arg_list[${x}]}"
         ;;
 
       *)        # End of parameters
@@ -741,7 +741,7 @@ AddUser()
     (( x++ ))
   done
 
-  if ! useradd "${comment}" "${homedir}" "${shell}" "${username}"; then
+  if ! useradd -c "${comment}" -d "${homedir}" -m -s "${shell}" "${username}"; then
     Log ${log_args} "ERROR: Unable to create user"
     Log ${log_args} "ERROR: username: >${username}<"
     Log ${log_args} "ERROR: shell: >${shell}<"
@@ -778,8 +778,8 @@ SetUserPassword()
   echo "${user}:${password}" | chpasswd
   if [ $? -ne 0 ]; then
     Log ${log_args} "ERROR: Unable to change user password"
-    Log ${log_args} "ERROR: User: >${cmd}<"
-    Log ${log_args} "ERROR: Password: >${svc}<"
+    Log ${log_args} "ERROR: User: >${user}<"
+    Log ${log_args} "ERROR: Password: >${password}<"
   else
     rc=true
   fi

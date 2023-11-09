@@ -470,6 +470,7 @@ __EOF
   fi
 
   Log "\nStackStorm: Setting up command line access"
+  CreateDirectory -l -t /root/.st2 root 0700 || exit 1
   echo "[credentials]" > /root/.st2/config
   echo "api_key = $(st2 apikey create -k)" >> /root/.st2/config
   chmod 640 /root/.st2/config
@@ -720,6 +721,12 @@ for file_name in "${!ROOT_SSH[@]}"; do
 done
 Log -t ""
 
+CreateDirectory -l -t "/home/iocane/.ssh" iocane 0700 || exit 1
+for file_name in "${!IOCANE_SSH[@]}"; do
+  CopyFile -l -t "/cdrom/files/iocane/${file_name}" "/home/iocane/.ssh" || exit 1
+  chmod ${IOCANE_SSH[${file_name}]} "/home/iocane/.ssh/${file_name}"
+done
+
 #
 # Make sure the packages we need are installed
 #
@@ -782,12 +789,12 @@ touch /.app_console_first_run
 # Setup the appconsole user
 #
 Log -t "Creating App Console user"
-useradd -c "AppConsole User" -h "/home/${APPCONSOLE_USER}" "${APPCONSOLE_USER}"
-SetUserPassword -l -t "${APPCONSOLE_USER}" "${APPCONSOLE_USER}" | exit 1
+AddUser -c "AppConsole User" -h "/home/${APPCONSOLE_USER}" "${APPCONSOLE_USER}" || exit 1
+SetUserPassword -l -t "${APPCONSOLE_USER}" "${APPCONSOLE_USER}" || exit 1
 
 Log -t "App Console User: Modifying login"
 RemoveFile -l -t "/home/${APPCONSOLE_USER}/.bashrc"  || exit 1
-  cat - << __EOF > "/home/${APPCONSOLE_USER}/.profile" 
+cat - << __EOF > "/home/${APPCONSOLE_USER}/.profile" 
 exec sudo /usr/bin/python3 /usr/local/opt/App-Console/app_console.py
 __EOF
 
@@ -795,13 +802,6 @@ Log -t "App Console User: Setting up SUDO access"
 cat - << __EOF > /etc/sudoers.d/${APPCONSOLE_USER}
 ${APPCONSOLE_USER}    ALL=NOPASSWD:   /usr/bin/python3 /usr/local/opt/App-Console/app_console.py
 __EOF
-
-Log -t "App Console User: Setting up SSH Access"
-CreateDirectory -l -t "/home/${APPCONSOLE_USER}/.ssh" "${APPCONSOLE_USER}" 0700 || exit 1
-for file_name in "${!IOCANE_SSH[@]}"; do
-  CopyFile -l -t "/cdrom/files/iocane/${file_name}" "/home/${APPCONSOLE_USER}/.ssh" || exit 1
-  chmod ${IOCANE_SSH[${file_name}]} "/home/${APPCONSOLE_USER}/.ssh/${file_name}"
-done
 
 Log -t ""
 

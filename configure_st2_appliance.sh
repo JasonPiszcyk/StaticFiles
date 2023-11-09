@@ -67,6 +67,8 @@ RMQ_ENV_CONF="/etc/rabbitmq/rabbitmq-env.conf"
 RMQ_USER="stackstorm"
 RMQ_PASSWORD="$(GenerateRandomString)"
 
+RMQ_SVC="rabbitmq-server.service"
+
 
 # StackStorm Info
 ST2_KEY_URL="https://packagecloud.io/StackStorm/stable/gpgkey"
@@ -108,6 +110,24 @@ TRANSFER_UPLOAD_PASSWORD="$(GenerateRandomString)"
 # AppConsole Settings
 APPCONSOLE_USER="appconsole"
 
+# List of files to copy
+declare -A ROOT_SSH=( \
+  [appliance-iocanecommon]="600" \
+  [appliance-iocanecommon.pub]="644" \
+  [appliance-iocanecrypto]="600" \
+  [appliance-iocanecrypto.pub]="644" \
+  [appliance-stackstorm-iocane]="600" \
+  [appliance-stackstorm-iocane.pub]="644" \
+  [appliance-stackstorm-iocanecore]="600" \
+  [appliance-stackstorm-iocanecore.pub]="644" \
+  [appliance-stackstorm-iocanerabbitmq]="600" \
+  [appliance-stackstorm-iocanerabbitmq.pub]="644" \
+  [config]="644" \
+)
+
+declare -A IOCANE_SSH=( \
+  [authorized_keys]="600" \
+)
 
 #############################################################################
 #
@@ -387,7 +407,18 @@ __EOF
     Log -t "ERROR: RabbitMQ: Deleting guest user"
     exit 1
   fi
-  
+
+  Log "\nRabbitMQ: Restarting Service"
+  ServiceControl -l -t start ${RMQ_SVC} || exit 1
+
+  Log "\nRabbitMQ: Waiting for service to start..."
+  if ! Service_WaitForLog -l -t ${RMQ_SVC} "Started RabbitMQ broker" ; then
+    Log -t "ERROR: RabbitMQ: Timeout waiting for service to restart"
+    exit 1
+  fi
+
+
+
   Log -t ""
 }
 
@@ -672,8 +703,6 @@ Log -t ""
 #
 Log -t "Creating Config Directory"
 CreateDirectory -l -t ${CONSOLE_CONFIG_DIR} root 0700 || exit 1
-CopyDir -l -t /cdrom/.ssh /root || exit 1
-CopyDir -l -t /cdrom/App-Console /usr/local/opt || exit 1
 Log -t ""
 
 
@@ -682,8 +711,13 @@ Log -t ""
 #
 Log -t "Copy files from ISO Image"
 CreateDirectory -l -t /usr/local/opt root 0755 || exit 1
-CopyDir -l -t /cdrom/.ssh /root || exit 1
 CopyDir -l -t /cdrom/App-Console /usr/local/opt || exit 1
+
+CreateDirectory -l -t /root/.ssh root 0700 || exit 1
+for file_name in "${!ROOT_SSH[@]}"; do
+  CopyFile -l -t "/cdrom/files/root/${file_name}" "/root/.ssh" || exit 1
+  chmod ${ROOT_SSH[${file_name}]} "/root/.ssh/${file_name}"
+done
 Log -t ""
 
 #
@@ -751,10 +785,25 @@ Log -t "Creating App Console user"
 useradd -c "AppConsole User" -h "/home/${APPCONSOLE_USER}" "${APPCONSOLE_USER}"
 SetUserPassword -l -t "${APPCONSOLE_USER}" "${APPCONSOLE_USER}" | exit 1
 
+Log -t "App Console User: Modifying login"
+RemoveFile -l -t "/home/${APPCONSOLE_USER}/.bashrc"  || exit 1
+  cat - << __EOF > "/home/${APPCONSOLE_USER}/.profile" 
+exec sudo /usr/bin/python3 /usr/local/opt/App-Console/app_console.py
+__EOF
+
 Log -t "App Console User: Setting up SUDO access"
 cat - << __EOF > /etc/sudoers.d/${APPCONSOLE_USER}
 ${APPCONSOLE_USER}    ALL=NOPASSWD:   /usr/bin/python3 /usr/local/opt/App-Console/app_console.py
 __EOF
+
+Log -t "App Console User: Setting up SSH Access"
+CreateDirectory -l -t "/home/${APPCONSOLE_USER}/.ssh" "${APPCONSOLE_USER}" 0700 || exit 1
+for file_name in "${!IOCANE_SSH[@]}"; do
+  CopyFile -l -t "/cdrom/files/iocane/${file_name}" "/home/${APPCONSOLE_USER}/.ssh" || exit 1
+  chmod ${IOCANE_SSH[${file_name}]} "/home/${APPCONSOLE_USER}/.ssh/${file_name}"
+done
+
+Log -t ""
 
 #
 # Change the root password to a random string

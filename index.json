@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1701411133,
-        "hash": "a34ee286b7ed6ecf455aa11022780010"
+        "generated_ts": 1701895870,
+        "hash": "6f78fc2cd19ba6170748852b56ae1c08"
     },
     "packs": {
         "iocane": {
@@ -213,8 +213,9 @@
                     ]
                 },
                 "rules": {
-                    "count": 15,
+                    "count": 16,
                     "resources": [
+                        "Backup VM - Apu",
                         "Zabbix - Restart Services",
                         "Backup VM - Quimby",
                         "Restart Chatops on Smithers",
@@ -237,7 +238,7 @@
             "email": "Jason@Piszcyk.com",
             "name": "sysadm",
             "repo_url": "git@github.com-StackStorm-Sysadm:JasonPiszcyk/StackStorm-Sysadm",
-            "version": "2.0.8"
+            "version": "2.0.9"
         },
         "winadmin": {
             "author": "Jason Piszcyk",

@@ -1,62 +1,18 @@
 {
     "metadata": {
-        "generated_ts": 1702183549,
-        "hash": "20db4f6bb5ab79a9020754791a302d13"
+        "generated_ts": 1702378733,
+        "hash": "3806a3323def1c14612f2c9e52ff82f5"
     },
     "packs": {
-        "iocane": {
+        "iasadmin": {
             "author": "Jason Piszcyk",
             "content": {
                 "actions": {
-                    "count": 9,
+                    "count": 3,
                     "resources": [
-                        "stackstorm_enforce_environment",
-                        "delete_ansible_host_info",
-                        "run_ansible_playbook",
-                        "ansible_create_inventory_string",
-                        "run_playbook_from_remote",
-                        "store_ansible_user_password",
-                        "set_ansible_host_info",
-                        "test_ansible_host_connection",
-                        "get_ansible_host_info"
-                    ]
-                },
-                "rules": {
-                    "count": 4,
-                    "resources": [
-                        "Iocane Notify",
-                        "Run the script to enforce the StackStorm environment",
-                        "Test Ansible Host Connection Rule",
-                        "Run Playbook from Remote Rule"
-                    ]
-                },
-                "sensors": {
-                    "count": 1,
-                    "resources": [
-                        "IocaneQueueSensor"
-                    ]
-                }
-            },
-            "description": "Iocane StackStorm Pack",
-            "email": "Jason.Piszcyk@iocane.com.au",
-            "name": "iocane",
-            "repo_url": "git@github.com-StackStorm-Iocane:JasonPiszcyk/StackStorm-Iocane",
-            "version": "0.6.0"
-        },
-        "iocaneadmin": {
-            "author": "Jason Piszcyk",
-            "content": {
-                "actions": {
-                    "count": 8,
-                    "resources": [
-                        "delete_customer_environment",
                         "process_task_response",
-                        "Apply_Updates",
-                        "create_customer_environment",
                         "process_remote_task_output",
-                        "Is_Reboot_Required",
-                        "remote_task_wrapper",
-                        "Reboot_Host"
+                        "remote_task_wrapper"
                     ]
                 },
                 "rules": {
@@ -68,42 +24,74 @@
                 "sensors": {
                     "count": 1,
                     "resources": [
-                        "IocaneAdminQueueSensor"
+                        "IASAdminQueueSensor"
                     ]
                 }
             },
-            "description": "Iocane Admin StackStorm Pack",
+            "description": "Iocane Automation System - Admin Connection",
             "email": "Jason.Piszcyk@iocane.com.au",
-            "name": "iocaneadmin",
-            "repo_url": "git@github.com-StackStorm-IocaneAdmin:JasonPiszcyk/StackStorm-IocaneAdmin",
-            "version": "0.6.0"
+            "name": "iasadmin",
+            "repo_url": "git@github.com-StackStorm-IASAdmin:JasonPiszcyk/StackStorm-IASAdmin",
+            "version": "0.7.0"
         },
-        "iocanecore": {
+        "iasclient": {
             "author": "Jason Piszcyk",
             "content": {
                 "actions": {
-                    "count": 12,
+                    "count": 8,
                     "resources": [
-                        "sign_message",
-                        "convert_to_json",
-                        "convert_from_json",
-                        "generate_and_store_rsa_keys",
-                        "add_ds_value",
-                        "verify_signature",
-                        "delete_ds_value",
-                        "generate_uuid",
-                        "store_rsa_key",
-                        "generate_rsa_keys",
-                        "find_inquiry",
-                        "get_ds_value"
+                        "delete_ansible_host_info",
+                        "run_ansible_playbook",
+                        "ansible_create_inventory_string",
+                        "run_playbook_from_remote",
+                        "store_ansible_user_password",
+                        "set_ansible_host_info",
+                        "test_ansible_host_connection",
+                        "get_ansible_host_info"
+                    ]
+                },
+                "rules": {
+                    "count": 2,
+                    "resources": [
+                        "Test Ansible Host Connection Rule",
+                        "Run Playbook from Remote Rule"
+                    ]
+                },
+                "sensors": {
+                    "count": 1,
+                    "resources": [
+                        "IASClientQueueSensor"
                     ]
                 }
             },
-            "description": "Iocane Shared StackStorm Pack",
+            "description": "Iocane Automation System - Client Connection",
             "email": "Jason.Piszcyk@iocane.com.au",
-            "name": "iocanecore",
-            "repo_url": "git@github.com-StackStorm-IocaneCore:JasonPiszcyk/StackStorm-IocaneCore",
-            "version": "0.6.2"
+            "name": "iasclient",
+            "repo_url": "git@github.com-StackStorm-IASClient:JasonPiszcyk/StackStorm-IASClient",
+            "version": "0.7.0"
+        },
+        "iascore": {
+            "author": "Jason Piszcyk",
+            "content": {
+                "actions": {
+                    "count": 8,
+                    "resources": [
+                        "add_ds_value",
+                        "delete_ds_value",
+                        "generate_uuid",
+                        "store_ed25519_key",
+                        "get_ds_value",
+                        "generate_and_store_ed25519_keys",
+                        "generate_ed25519_keys",
+                        "ping"
+                    ]
+                }
+            },
+            "description": "Iocane Automation System - Core Functionality",
+            "email": "Jason.Piszcyk@iocane.com.au",
+            "name": "iascore",
+            "repo_url": "git@github.com-StackStorm-IASCore:JasonPiszcyk/StackStorm-IASCore",
+            "version": "0.7.1"
         },
         "iocanerabbitmq": {
             "author": "Jason Piszcyk",

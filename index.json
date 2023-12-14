@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1702552195,
-        "hash": "5e241ae5d509fcc5d64f752ab27b29d3"
+        "generated_ts": 1702555189,
+        "hash": "949ee0c6fdce02370b7869ea7a56bbdc"
     },
     "packs": {
         "iasadmin": {
@@ -56,12 +56,6 @@
                         "Test Ansible Host Connection Rule",
                         "Run Playbook from Remote Rule"
                     ]
-                },
-                "sensors": {
-                    "count": 1,
-                    "resources": [
-                        "IASClientQueueSensor"
-                    ]
                 }
             },
             "description": "Iocane Automation System - Client Connection",
@@ -85,13 +79,19 @@
                         "generate_ed25519_keys",
                         "ping"
                     ]
+                },
+                "sensors": {
+                    "count": 1,
+                    "resources": [
+                        "IASCoreRMQSensor"
+                    ]
                 }
             },
             "description": "Iocane Automation System - Core Functionality",
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iascore",
             "repo_url": "git@github.com-StackStorm-IASCore:JasonPiszcyk/StackStorm-IASCore",
-            "version": "0.7.5"
+            "version": "0.7.6"
         },
         "iocanerabbitmq": {
             "author": "Jason Piszcyk",

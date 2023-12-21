@@ -1,33 +1,12 @@
 {
     "metadata": {
-        "generated_ts": 1703070520,
-        "hash": "58eefbe25e7f944a74dd45d04d9bf88c"
+        "generated_ts": 1703142892,
+        "hash": "9281690d124ab89cc338716e90624b6b"
     },
     "packs": {
         "iasadmin": {
             "author": "Jason Piszcyk",
-            "content": {
-                "actions": {
-                    "count": 3,
-                    "resources": [
-                        "process_task_response",
-                        "process_remote_task_output",
-                        "remote_task_wrapper"
-                    ]
-                },
-                "rules": {
-                    "count": 1,
-                    "resources": [
-                        "Process Task Response Rule"
-                    ]
-                },
-                "sensors": {
-                    "count": 1,
-                    "resources": [
-                        "IASAdminQueueSensor"
-                    ]
-                }
-            },
+            "content": {},
             "description": "Iocane Automation System - Admin Connection",
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iasadmin",
@@ -111,11 +90,11 @@
             "repo_url": "git@github.com-StackStorm-IASCore:JasonPiszcyk/StackStorm-IASCore",
             "version": "0.7.16"
         },
-        "iocanerabbitmq": {
+        "iasrabbitmq": {
             "author": "Jason Piszcyk",
             "content": {
                 "actions": {
-                    "count": 14,
+                    "count": 15,
                     "resources": [
                         "add_shovel",
                         "delete_vhost",
@@ -123,9 +102,10 @@
                         "get_user",
                         "add_user",
                         "list_users",
-                        "send_message_to_queue",
+                        "add_queue",
                         "delete_shovel",
                         "delete_user",
+                        "delete_queue",
                         "delete_user_permissions",
                         "get_user_permissions",
                         "get_vhost",
@@ -134,11 +114,11 @@
                     ]
                 }
             },
-            "description": "Iocane RabbitMQ StackStorm Pack",
+            "description": "Iocane Automation System - RabbitMQ StackStorm Pack",
             "email": "Jason.Piszcyk@iocane.com.au",
-            "name": "iocanerabbitmq",
-            "repo_url": "git@github.com-StackStorm-IocaneRabbitMQ:JasonPiszcyk/StackStorm-IocaneRabbitMQ",
-            "version": "0.6.1"
+            "name": "iasrabbitmq",
+            "repo_url": "git@github.com-StackStorm-IASRabbitMQ:JasonPiszcyk/StackStorm-IASRabbitMQ",
+            "version": "0.7.0"
         },
         "nomad": {
             "author": "Jason Piszcyk",

@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1706836432,
-        "hash": "45663c696726aa51eaf268093455cdc2"
+        "generated_ts": 1706849247,
+        "hash": "cda81c7ea9988ea64d8df805045ac459"
     },
     "packs": {
         "iasadmin": {
@@ -126,7 +126,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iasrabbitmq",
             "repo_url": "git@github.com-StackStorm-IASRabbitMQ:JasonPiszcyk/StackStorm-IASRabbitMQ",
-            "version": "0.7.4"
+            "version": "0.7.5"
         },
         "nomad": {
             "author": "Jason Piszcyk",

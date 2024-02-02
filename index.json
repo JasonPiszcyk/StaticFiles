@@ -1,17 +1,25 @@
 {
     "metadata": {
-        "generated_ts": 1703575659,
-        "hash": "25331d4b1d0f6b4c0525ff2002070c22"
+        "generated_ts": 1706832927,
+        "hash": "1e743bf33d22f5fe21f26b1a51864f75"
     },
     "packs": {
         "iasadmin": {
             "author": "Jason Piszcyk",
-            "content": {},
-            "description": "Iocane Automation System - Admin Connection",
+            "content": {
+                "actions": {
+                    "count": 2,
+                    "resources": [
+                        "ias_create_customer_environment",
+                        "ias_delete_customer_environment"
+                    ]
+                }
+            },
+            "description": "Iocane Automation System - Admin Functions",
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iasadmin",
             "repo_url": "git@github.com-StackStorm-IASAdmin:JasonPiszcyk/StackStorm-IASAdmin",
-            "version": "0.7.0"
+            "version": "0.8.0"
         },
         "iasclient": {
             "author": "Jason Piszcyk",
@@ -88,7 +96,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iascore",
             "repo_url": "git@github.com-StackStorm-IASCore:JasonPiszcyk/StackStorm-IASCore",
-            "version": "0.7.24"
+            "version": "0.7.25"
         },
         "iasrabbitmq": {
             "author": "Jason Piszcyk",
@@ -118,7 +126,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iasrabbitmq",
             "repo_url": "git@github.com-StackStorm-IASRabbitMQ:JasonPiszcyk/StackStorm-IASRabbitMQ",
-            "version": "0.7.1"
+            "version": "0.7.2"
         },
         "nomad": {
             "author": "Jason Piszcyk",

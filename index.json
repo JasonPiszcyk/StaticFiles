@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1706850776,
-        "hash": "dea8a070345e771d5c77fa79fce67371"
+        "generated_ts": 1707367743,
+        "hash": "c82579d5348f2bf027c8607fb2d48fb4"
     },
     "packs": {
         "iasadmin": {
@@ -23,33 +23,12 @@
         },
         "iasclient": {
             "author": "Jason Piszcyk",
-            "content": {
-                "actions": {
-                    "count": 8,
-                    "resources": [
-                        "delete_ansible_host_info",
-                        "run_ansible_playbook",
-                        "ansible_create_inventory_string",
-                        "run_playbook_from_remote",
-                        "store_ansible_user_password",
-                        "set_ansible_host_info",
-                        "test_ansible_host_connection",
-                        "get_ansible_host_info"
-                    ]
-                },
-                "rules": {
-                    "count": 2,
-                    "resources": [
-                        "Test Ansible Host Connection Rule",
-                        "Run Playbook from Remote Rule"
-                    ]
-                }
-            },
+            "content": {},
             "description": "Iocane Automation System - Client Connection",
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iasclient",
             "repo_url": "git@github.com-StackStorm-IASClient:JasonPiszcyk/StackStorm-IASClient",
-            "version": "0.7.0"
+            "version": "0.7.1"
         },
         "iascore": {
             "author": "Jason Piszcyk",
@@ -96,7 +75,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iascore",
             "repo_url": "git@github.com-StackStorm-IASCore:JasonPiszcyk/StackStorm-IASCore",
-            "version": "0.7.25"
+            "version": "0.7.26"
         },
         "iasrabbitmq": {
             "author": "Jason Piszcyk",

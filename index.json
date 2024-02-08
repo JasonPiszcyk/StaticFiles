@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1707367782,
-        "hash": "c82579d5348f2bf027c8607fb2d48fb4"
+        "generated_ts": 1707377230,
+        "hash": "4182c566c37f8e935073dacc65a0cb79"
     },
     "packs": {
         "iasadmin": {
@@ -24,11 +24,28 @@
         "iasclient": {
             "author": "Jason Piszcyk",
             "content": {},
-            "description": "Iocane Automation System - Client Connection",
+            "description": "Iocane Automation System - Client",
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iasclient",
             "repo_url": "git@github.com-StackStorm-IASClient:JasonPiszcyk/StackStorm-IASClient",
             "version": "0.7.1"
+        },
+        "iascontroller": {
+            "author": "Jason Piszcyk",
+            "content": {
+                "actions": {
+                    "count": 2,
+                    "resources": [
+                        "Apply_Operating_System_Updates",
+                        "parse_ansible_result"
+                    ]
+                }
+            },
+            "description": "Iocane Automation System - Controller",
+            "email": "Jason.Piszcyk@iocane.com.au",
+            "name": "iascontroller",
+            "repo_url": "git@github.com-StackStorm-IASController:JasonPiszcyk/StackStorm-IASController",
+            "version": "0.5.0"
         },
         "iascore": {
             "author": "Jason Piszcyk",

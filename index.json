@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1707461754,
-        "hash": "7bcfae19609542d35624e414d33e8dc2"
+        "generated_ts": 1707645826,
+        "hash": "694dd9a74b2c0220ad2ff37cc41683c9"
     },
     "packs": {
         "iasadmin": {
@@ -51,12 +51,13 @@
             "author": "Jason Piszcyk",
             "content": {
                 "actions": {
-                    "count": 19,
+                    "count": 20,
                     "resources": [
                         "ansible_set_host_info",
                         "ansible_get_host_info",
                         "ansible_delete_host_info",
                         "add_ds_value",
+                        "ansible_process_host_list",
                         "validate_request",
                         "ping_reply",
                         "delete_ds_value",
@@ -92,7 +93,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iascore",
             "repo_url": "git@github.com-StackStorm-IASCore:JasonPiszcyk/StackStorm-IASCore",
-            "version": "0.7.28"
+            "version": "0.7.29"
         },
         "iasrabbitmq": {
             "author": "Jason Piszcyk",

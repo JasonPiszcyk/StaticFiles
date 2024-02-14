@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1707902552,
-        "hash": "89d1e535903a358e62dcdb8f885d123a"
+        "generated_ts": 1707902603,
+        "hash": "b9a18af5feec3e7805c673c0b0edb17d"
     },
     "packs": {
         "iasadmin": {
@@ -28,7 +28,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iasclient",
             "repo_url": "git@github.com-StackStorm-IASClient:JasonPiszcyk/StackStorm-IASClient",
-            "version": "0.7.11"
+            "version": "0.7.12"
         },
         "iascontroller": {
             "author": "Jason Piszcyk",

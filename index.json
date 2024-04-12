@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1709434173,
-        "hash": "afaa83d1e06b20f5e20116c30da1200f"
+        "generated_ts": 1712896574,
+        "hash": "821d23af1ba2783f9fafdff5ed37a66b"
     },
     "packs": {
         "iasadmin": {
@@ -51,7 +51,7 @@
             "author": "Jason Piszcyk",
             "content": {
                 "actions": {
-                    "count": 23,
+                    "count": 24,
                     "resources": [
                         "ansible_gather_playbook_results",
                         "ansible_set_host_info",
@@ -62,6 +62,7 @@
                         "validate_request",
                         "ping_reply",
                         "delete_ds_value",
+                        "remote_action_reply",
                         "remote_ansible_reply",
                         "remote_ansible",
                         "ansible_test_host_connection",
@@ -79,10 +80,11 @@
                     ]
                 },
                 "rules": {
-                    "count": 2,
+                    "count": 3,
                     "resources": [
                         "Ping Reply Rule",
-                        "Ansible Reply Rule"
+                        "Ansible Reply Rule",
+                        "Action Reply Rule"
                     ]
                 },
                 "sensors": {
@@ -126,7 +128,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iasrabbitmq",
             "repo_url": "git@github.com-StackStorm-IASRabbitMQ:JasonPiszcyk/StackStorm-IASRabbitMQ",
-            "version": "0.7.6"
+            "version": "1.0.0"
         },
         "nomad": {
             "author": "Jason Piszcyk",

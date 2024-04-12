@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1712896574,
-        "hash": "821d23af1ba2783f9fafdff5ed37a66b"
+        "generated_ts": 1712909449,
+        "hash": "18e709b0dd7eeb2b9da17b86395494bc"
     },
     "packs": {
         "iasadmin": {
@@ -34,10 +34,18 @@
             "author": "Jason Piszcyk",
             "content": {
                 "actions": {
-                    "count": 2,
+                    "count": 4,
                     "resources": [
                         "Apply_Operating_System_Updates",
-                        "parse_ansible_result"
+                        "parse_ansible_result",
+                        "remote_client_request_reply",
+                        "process_client_request"
+                    ]
+                },
+                "rules": {
+                    "count": 1,
+                    "resources": [
+                        "Client Request Reply Rule"
                     ]
                 }
             },
@@ -51,24 +59,25 @@
             "author": "Jason Piszcyk",
             "content": {
                 "actions": {
-                    "count": 24,
+                    "count": 25,
                     "resources": [
                         "ansible_gather_playbook_results",
                         "ansible_set_host_info",
                         "ansible_get_host_info",
                         "ansible_delete_host_info",
+                        "remote_query_reply",
                         "add_ds_value",
                         "ansible_process_host_list",
                         "validate_request",
                         "ping_reply",
                         "delete_ds_value",
-                        "remote_action_reply",
                         "remote_ansible_reply",
                         "remote_ansible",
                         "ansible_test_host_connection",
                         "generate_uuid",
                         "ansible_run_playbook",
                         "store_ed25519_key",
+                        "query_run",
                         "ansible_run_playbook_concurrent",
                         "get_ds_value",
                         "generate_and_store_ed25519_keys",
@@ -84,7 +93,7 @@
                     "resources": [
                         "Ping Reply Rule",
                         "Ansible Reply Rule",
-                        "Action Reply Rule"
+                        "Query Reply Rule"
                     ]
                 },
                 "sensors": {
@@ -98,7 +107,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iascore",
             "repo_url": "git@github.com-StackStorm-IASCore:JasonPiszcyk/StackStorm-IASCore",
-            "version": "0.7.50"
+            "version": "1.0.0"
         },
         "iasrabbitmq": {
             "author": "Jason Piszcyk",
@@ -128,7 +137,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iasrabbitmq",
             "repo_url": "git@github.com-StackStorm-IASRabbitMQ:JasonPiszcyk/StackStorm-IASRabbitMQ",
-            "version": "1.0.0"
+            "version": "1.0.1"
         },
         "nomad": {
             "author": "Jason Piszcyk",

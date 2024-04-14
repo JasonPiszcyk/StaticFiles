@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1712915306,
-        "hash": "005b98bf0df1e9102924f7d34cf328dc"
+        "generated_ts": 1713076383,
+        "hash": "764ea14211b5e2319708579ed94f20da"
     },
     "packs": {
         "iasadmin": {
@@ -59,27 +59,28 @@
             "author": "Jason Piszcyk",
             "content": {
                 "actions": {
-                    "count": 25,
+                    "count": 26,
                     "resources": [
                         "ansible_gather_playbook_results",
                         "ansible_set_host_info",
                         "ansible_get_host_info",
                         "ansible_delete_host_info",
-                        "remote_query_reply",
                         "add_ds_value",
                         "ansible_process_host_list",
                         "validate_request",
                         "ping_reply",
                         "delete_ds_value",
+                        "remote_action",
+                        "remote_action_reply",
                         "remote_ansible_reply",
                         "remote_ansible",
                         "ansible_test_host_connection",
                         "generate_uuid",
                         "ansible_run_playbook",
                         "store_ed25519_key",
-                        "query_run",
                         "ansible_run_playbook_concurrent",
                         "get_ds_value",
+                        "action_run",
                         "generate_and_store_ed25519_keys",
                         "send_reply",
                         "generate_ed25519_keys",
@@ -93,7 +94,7 @@
                     "resources": [
                         "Ping Reply Rule",
                         "Ansible Reply Rule",
-                        "Query Reply Rule"
+                        "Action Reply Rule"
                     ]
                 },
                 "sensors": {
@@ -107,7 +108,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iascore",
             "repo_url": "git@github.com-StackStorm-IASCore:JasonPiszcyk/StackStorm-IASCore",
-            "version": "1.0.3"
+            "version": "1.1.0"
         },
         "iasrabbitmq": {
             "author": "Jason Piszcyk",

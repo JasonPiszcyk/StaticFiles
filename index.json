@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1713076383,
-        "hash": "764ea14211b5e2319708579ed94f20da"
+        "generated_ts": 1713077727,
+        "hash": "5d3fc9d8e55c12857c13868bcec64b1e"
     },
     "packs": {
         "iasadmin": {
@@ -38,14 +38,14 @@
                     "resources": [
                         "Apply_Operating_System_Updates",
                         "parse_ansible_result",
-                        "remote_client_request_reply",
-                        "process_client_request"
+                        "process_appliance_request",
+                        "remote_client_request_reply"
                     ]
                 },
                 "rules": {
                     "count": 1,
                     "resources": [
-                        "Client Request Reply Rule"
+                        "Appliance Request Reply Rule"
                     ]
                 }
             },
@@ -53,7 +53,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iascontroller",
             "repo_url": "git@github.com-StackStorm-IASController:JasonPiszcyk/StackStorm-IASController",
-            "version": "1.0.2"
+            "version": "1.0.3"
         },
         "iascore": {
             "author": "Jason Piszcyk",
@@ -108,7 +108,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iascore",
             "repo_url": "git@github.com-StackStorm-IASCore:JasonPiszcyk/StackStorm-IASCore",
-            "version": "1.1.0"
+            "version": "1.1.1"
         },
         "iasrabbitmq": {
             "author": "Jason Piszcyk",

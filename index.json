@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1713160148,
-        "hash": "57d8ed43110f72d01532cfab7e33d775"
+        "generated_ts": 1713160527,
+        "hash": "6fa9e5459053d8cc4c725c328dbb992c"
     },
     "packs": {
         "iasadmin": {
@@ -39,7 +39,7 @@
                         "Apply_Operating_System_Updates",
                         "parse_ansible_result",
                         "process_appliance_request",
-                        "remote_client_request_reply"
+                        "remote_appliance_request_reply"
                     ]
                 },
                 "rules": {
@@ -53,7 +53,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iascontroller",
             "repo_url": "git@github.com-StackStorm-IASController:JasonPiszcyk/StackStorm-IASController",
-            "version": "1.0.4"
+            "version": "1.0.5"
         },
         "iascore": {
             "author": "Jason Piszcyk",

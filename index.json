@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1713151663,
-        "hash": "71a6575218ae0e8b0eecf3bc65cf8a43"
+        "generated_ts": 1713154968,
+        "hash": "827ccdc56b34cc211d6073bd1f54d67b"
     },
     "packs": {
         "iasadmin": {
@@ -108,7 +108,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iascore",
             "repo_url": "git@github.com-StackStorm-IASCore:JasonPiszcyk/StackStorm-IASCore",
-            "version": "1.1.6"
+            "version": "1.1.7"
         },
         "iasrabbitmq": {
             "author": "Jason Piszcyk",

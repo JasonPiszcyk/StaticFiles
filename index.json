@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1717458658,
-        "hash": "9bd629d89c6a23229b0e061dd8c520e6"
+        "generated_ts": 1728718199,
+        "hash": "c944de490e7024e50db05c7ce318b055"
     },
     "packs": {
         "iasadmin": {
@@ -30,6 +30,15 @@
             "repo_url": "git@github.com-StackStorm-IASClient:JasonPiszcyk/StackStorm-IASClient",
             "version": "1.0.0"
         },
+        "iasclient-custom": {
+            "author": "Jason Piszcyk",
+            "content": {},
+            "description": "Iocane Automation System - Client Customisations",
+            "email": "Jason.Piszcyk@iocane.com.au",
+            "name": "iasclient-custom",
+            "repo_url": "git@github.com-StackStorm-IASClnt-Template:JasonPiszcyk/StackStorm-IASClnt-Template",
+            "version": "0.1.0"
+        },
         "iascontroller": {
             "author": "Jason Piszcyk",
             "content": {
@@ -54,6 +63,15 @@
             "name": "iascontroller",
             "repo_url": "git@github.com-StackStorm-IASController:JasonPiszcyk/StackStorm-IASController",
             "version": "1.0.7"
+        },
+        "iascontroller-custom": {
+            "author": "Jason Piszcyk",
+            "content": {},
+            "description": "Iocane Automation System - Client Customisations for the controller",
+            "email": "Jason.Piszcyk@iocane.com.au",
+            "name": "iascontroller-custom",
+            "repo_url": "git@github.com-StackStorm-IASCtrl-Template:JasonPiszcyk/StackStorm-IASCtrl-Template",
+            "version": "0.1.0"
         },
         "iascore": {
             "author": "Jason Piszcyk",
@@ -108,7 +126,7 @@
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iascore",
             "repo_url": "git@github.com-StackStorm-IASCore:JasonPiszcyk/StackStorm-IASCore",
-            "version": "1.1.12"
+            "version": "1.1.14"
         },
         "iasrabbitmq": {
             "author": "Jason Piszcyk",
@@ -139,27 +157,6 @@
             "name": "iasrabbitmq",
             "repo_url": "git@github.com-StackStorm-IASRabbitMQ:JasonPiszcyk/StackStorm-IASRabbitMQ",
             "version": "1.0.3"
-        },
-        "nomad": {
-            "author": "Jason Piszcyk",
-            "content": {
-                "actions": {
-                    "count": 6,
-                    "resources": [
-                        "drain_node",
-                        "make_node_eligible",
-                        "get_node_id",
-                        "list_allocations",
-                        "list_nodes",
-                        "get_config"
-                    ]
-                }
-            },
-            "description": "Manage Nomad Environment",
-            "email": "Jason@Piszcyk.com",
-            "name": "nomad",
-            "repo_url": "git@github.com-StackStorm-Nomad:JasonPiszcyk/StackStorm-Nomad",
-            "version": "1.0.10"
         },
         "proxmox": {
             "author": "Jason Piszcyk",
@@ -194,90 +191,6 @@
             "name": "proxmox",
             "repo_url": "git@github.com-StackStorm-Proxmox:JasonPiszcyk/StackStorm-Proxmox",
             "version": "1.0.7"
-        },
-        "sysadm": {
-            "author": "Jason Piszcyk",
-            "content": {
-                "actions": {
-                    "count": 13,
-                    "resources": [
-                        "create_zabbix_maintenance",
-                        "unlock_hashicorp_vault",
-                        "apply_updates",
-                        "extract_zabbix_info",
-                        "restart_services",
-                        "reboot_nomad_node",
-                        "filter_zabbix_host_list",
-                        "remove_zabbix_maintenance",
-                        "update_proxmox_node",
-                        "update_nomad_nodes",
-                        "fix_consul_raft_leader",
-                        "update_hosts",
-                        "reboot_host"
-                    ]
-                },
-                "rules": {
-                    "count": 16,
-                    "resources": [
-                        "Backup VM - Apu",
-                        "Zabbix - Restart Services",
-                        "Backup VM - Quimby",
-                        "Restart Chatops on Smithers",
-                        "Consul - Fix Raft Leader",
-                        "Consul - Fix Raft Leader",
-                        "Backup VM Configs",
-                        "Backup VM - Nelson",
-                        "Set Bacula Timestamp",
-                        "Backup VM - Wiggum",
-                        "Backup VM - Wiggum",
-                        "Backup VM - Wiggum",
-                        "SysAdm Notify",
-                        "Zabbix - Unseal Vault",
-                        "Zabbix - Unseal Vault",
-                        "Zabbix - Unseal Vault"
-                    ]
-                }
-            },
-            "description": "System Admin tasks",
-            "email": "Jason@Piszcyk.com",
-            "name": "sysadm",
-            "repo_url": "git@github.com-StackStorm-Sysadm:JasonPiszcyk/StackStorm-Sysadm",
-            "version": "2.0.10"
-        },
-        "winadmin": {
-            "author": "Jason Piszcyk",
-            "content": {
-                "actions": {
-                    "count": 14,
-                    "resources": [
-                        "create_zabbix_maintenance",
-                        "update_windows_hosts",
-                        "apply_updates_and_reboot",
-                        "reboot_win_host_command",
-                        "is_reboot_required_win",
-                        "windows_updates_available",
-                        "reboot_win",
-                        "filter_zabbix_host_list",
-                        "wu_job_is_running",
-                        "remove_zabbix_maintenance",
-                        "get_service_status",
-                        "apply_updates_win",
-                        "get_uptime",
-                        "get_config"
-                    ]
-                },
-                "rules": {
-                    "count": 1,
-                    "resources": [
-                        "WinAdmin Notify"
-                    ]
-                }
-            },
-            "description": "Windows System Admin tasks",
-            "email": "Jason@Piszcyk.com",
-            "name": "winadmin",
-            "repo_url": "git@github.com-StackStorm-WinAdmin:JasonPiszcyk/StackStorm-WinAdmin",
-            "version": "0.0.9"
         }
     }
 }

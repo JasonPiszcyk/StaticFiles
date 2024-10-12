@@ -21,7 +21,7 @@ import time
 #===============================================================================
 # Global Variables (our Constants)
 #===============================================================================
-__BASE_DIR = "/Users/jp/GitHub"
+__BASE_DIR = "/Users/jp/Development"
 __PACK_INDEX_FILE = __BASE_DIR + "/StaticFiles/index.json"
 __PACK_SUBDIR_LIST = ["actions", "sensors", "rules"]
 # __GITHUB_URL_BASE = "https://github.com/JasonPiszcyk/"

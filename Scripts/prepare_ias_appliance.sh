@@ -12,7 +12,7 @@
 #
 
 # IAS RPM Info
-IAS_RPM_NAME="ias-appliance-${IAS_RPM_VERSION:-"0.6.1-5"}.x86_64.rpm"
+IAS_RPM_NAME="ias-appliance-${IAS_RPM_VERSION:-"0.6.1-8"}.x86_64.rpm"
 IAS_RPM_LOCATION="https://raw.githubusercontent.com/JasonPiszcyk/StaticFiles/main/RPMS"
 
 

@@ -1,6 +1,6 @@
 {
     "metadata": {
-        "generated_ts": 1728818420,
+        "generated_ts": 1729150360,
         "hash": "181aab5ec65163b460f303223259f7b8"
     },
     "packs": {
@@ -18,7 +18,7 @@
             "description": "Iocane Automation System - Admin Functions",
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iasadmin",
-            "repo_url": "git@github.com-StackStorm-IASAdmin:JasonPiszcyk/StackStorm-IASAdmin",
+            "repo_url": "https://github.com/JasonPiszcyk/StackStorm-IASAdmin",
             "version": "0.8.2"
         },
         "iasclient": {
@@ -27,7 +27,7 @@
             "description": "Iocane Automation System - Client",
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iasclient",
-            "repo_url": "git@github.com-StackStorm-IASClient:JasonPiszcyk/StackStorm-IASClient",
+            "repo_url": "https://github.com/JasonPiszcyk/StackStorm-IASClient",
             "version": "1.0.0"
         },
         "iasclient-custom": {
@@ -36,7 +36,7 @@
             "description": "Iocane Automation System - Client Customisations",
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iasclient-custom",
-            "repo_url": "git@github.com-StackStorm-IASClnt-Template:JasonPiszcyk/StackStorm-IASClnt-Template",
+            "repo_url": "https://github.com/JasonPiszcyk/StackStorm-IASClnt-Template",
             "version": "0.1.0"
         },
         "iascontroller": {
@@ -61,7 +61,7 @@
             "description": "Iocane Automation System - Controller",
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iascontroller",
-            "repo_url": "git@github.com-StackStorm-IASController:JasonPiszcyk/StackStorm-IASController",
+            "repo_url": "https://github.com/JasonPiszcyk/StackStorm-IASController",
             "version": "1.0.7"
         },
         "iascontroller-custom": {
@@ -70,7 +70,7 @@
             "description": "Iocane Automation System - Client Customisations for the controller",
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iascontroller-custom",
-            "repo_url": "git@github.com-StackStorm-IASCtrl-Template:JasonPiszcyk/StackStorm-IASCtrl-Template",
+            "repo_url": "https://github.com/JasonPiszcyk/StackStorm-IASCtrl-Template",
             "version": "0.1.0"
         },
         "iascore": {
@@ -125,7 +125,7 @@
             "description": "Iocane Automation System - Core Functionality",
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iascore",
-            "repo_url": "git@github.com-StackStorm-IASCore:JasonPiszcyk/StackStorm-IASCore",
+            "repo_url": "https://github.com/JasonPiszcyk/StackStorm-IASCore",
             "version": "1.1.17"
         },
         "iasrabbitmq": {
@@ -155,7 +155,7 @@
             "description": "Iocane Automation System - RabbitMQ StackStorm Pack",
             "email": "Jason.Piszcyk@iocane.com.au",
             "name": "iasrabbitmq",
-            "repo_url": "git@github.com-StackStorm-IASRabbitMQ:JasonPiszcyk/StackStorm-IASRabbitMQ",
+            "repo_url": "https://github.com/JasonPiszcyk/StackStorm-IASRabbitMQ",
             "version": "1.0.3"
         },
         "proxmox": {
@@ -189,7 +189,7 @@
             "description": "Proxmox Connectivity",
             "email": "Jason@Piszcyk.com",
             "name": "proxmox",
-            "repo_url": "git@github.com-StackStorm-Proxmox:JasonPiszcyk/StackStorm-Proxmox",
+            "repo_url": "https://github.com/JasonPiszcyk/StackStorm-Proxmox",
             "version": "1.0.7"
         }
     }

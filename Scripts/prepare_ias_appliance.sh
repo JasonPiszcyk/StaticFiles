@@ -11,11 +11,6 @@
 # shellcheck disable=SC2119,SC2317
 #
 
-# IAS RPM Info
-IAS_RPM_NAME="ias-appliance-${IAS_RPM_VERSION:-"0.7.0-4"}.x86_64.rpm"
-IAS_RPM_LOCATION="https://raw.githubusercontent.com/JasonPiszcyk/StaticFiles/main/RPMS"
-
-
 #############################################################################
 #
 # I choose to start the main code.... Here
@@ -34,8 +29,9 @@ fi
 dnf config-manager --set-enabled crb
 dnf install -y epel-release
 dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+dnf config-manager --add-repo https://repo.piszcyk.com/rpms/rocky/9/piszcyk.repo
 
 # Install the ias-appliance RPM - Will install all dependant packages
-dnf install -y "${IAS_RPM_LOCATION}/${IAS_RPM_NAME}"
+dnf install -y ias-appliance
 
 exit 0

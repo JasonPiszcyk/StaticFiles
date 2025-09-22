@@ -1,9 +1,56 @@
 {
     "metadata": {
-        "generated_ts": 1729910859,
-        "hash": "f862cc4dd468be0e949622303b7430d9"
+        "generated_ts": 1758551416,
+        "hash": "e11e8cfbc37e4dac7025205070ae2fed"
     },
     "packs": {
+        "callidus-client": {
+            "author": "Jason Piszcyk",
+            "content": {},
+            "description": "Iocane Automation System - Client",
+            "email": "Jason.Piszcyk@iocane.com.au",
+            "name": "callidus-client",
+            "repo_url": "https://github.com/JasonPiszcyk/StackStorm-IASClient",
+            "version": "1.0.1"
+        },
+        "callidus-client-custom": {
+            "author": "Jason Piszcyk",
+            "content": {},
+            "description": "Iocane Automation System - Client Customisations",
+            "email": "Jason.Piszcyk@iocane.com.au",
+            "name": "callidus-client-custom",
+            "repo_url": "https://github.com/JasonPiszcyk/StackStorm-IASClnt-Template",
+            "version": "0.1.0"
+        },
+        "callidus-core": {
+            "author": "Jason Piszcyk",
+            "content": {
+                "actions": {
+                    "count": 2,
+                    "resources": [
+                        "ping_reply",
+                        "ping"
+                    ]
+                },
+                "rules": {
+                    "count": 1,
+                    "resources": [
+                        "Ping Reply Rule"
+                    ]
+                },
+                "sensors": {
+                    "count": 1,
+                    "resources": [
+                        "callidus-core-ZMQSensor"
+                    ]
+                }
+            },
+            "description": "Callidus - Core Functionality",
+            "email": "Jason.Piszcyk@gmail.com",
+            "name": "callidus-core",
+            "repo_url": "https://github.com/JasonPiszcyk/StackStorm-Callidus-Core",
+            "version": "1.3.0"
+        },
         "iasadmin": {
             "author": "Jason Piszcyk",
             "content": {
@@ -20,24 +67,6 @@
             "name": "iasadmin",
             "repo_url": "https://github.com/JasonPiszcyk/StackStorm-IASAdmin",
             "version": "0.8.2"
-        },
-        "iasclient": {
-            "author": "Jason Piszcyk",
-            "content": {},
-            "description": "Iocane Automation System - Client",
-            "email": "Jason.Piszcyk@iocane.com.au",
-            "name": "iasclient",
-            "repo_url": "https://github.com/JasonPiszcyk/StackStorm-IASClient",
-            "version": "1.0.1"
-        },
-        "iasclient-custom": {
-            "author": "Jason Piszcyk",
-            "content": {},
-            "description": "Iocane Automation System - Client Customisations",
-            "email": "Jason.Piszcyk@iocane.com.au",
-            "name": "iasclient-custom",
-            "repo_url": "https://github.com/JasonPiszcyk/StackStorm-IASClnt-Template",
-            "version": "0.1.0"
         },
         "iascontroller": {
             "author": "Jason Piszcyk",
@@ -72,61 +101,6 @@
             "name": "iascontroller-custom",
             "repo_url": "https://github.com/JasonPiszcyk/StackStorm-IASCtrl-Template",
             "version": "0.1.0"
-        },
-        "iascore": {
-            "author": "Jason Piszcyk",
-            "content": {
-                "actions": {
-                    "count": 26,
-                    "resources": [
-                        "ansible_gather_playbook_results",
-                        "ansible_set_host_info",
-                        "ansible_get_host_info",
-                        "ansible_delete_host_info",
-                        "add_ds_value",
-                        "ansible_process_host_list",
-                        "validate_request",
-                        "ping_reply",
-                        "delete_ds_value",
-                        "remote_action",
-                        "remote_action_reply",
-                        "remote_ansible_reply",
-                        "remote_ansible",
-                        "ansible_test_host_connection",
-                        "generate_uuid",
-                        "ansible_run_playbook",
-                        "store_ed25519_key",
-                        "ansible_run_playbook_concurrent",
-                        "get_ds_value",
-                        "action_run",
-                        "generate_and_store_ed25519_keys",
-                        "send_reply",
-                        "generate_ed25519_keys",
-                        "ansible_find_playbook",
-                        "ping",
-                        "delete_tmp_file"
-                    ]
-                },
-                "rules": {
-                    "count": 3,
-                    "resources": [
-                        "Ping Reply Rule",
-                        "Ansible Reply Rule",
-                        "Action Reply Rule"
-                    ]
-                },
-                "sensors": {
-                    "count": 1,
-                    "resources": [
-                        "IASCoreRMQSensor"
-                    ]
-                }
-            },
-            "description": "Iocane Automation System - Core Functionality",
-            "email": "Jason.Piszcyk@iocane.com.au",
-            "name": "iascore",
-            "repo_url": "https://github.com/JasonPiszcyk/StackStorm-IASCore",
-            "version": "1.2.3"
         },
         "iasrabbitmq": {
             "author": "Jason Piszcyk",

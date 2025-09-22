@@ -1,14 +1,27 @@
 #!/usr/bin/env python3
 '''
-* GenerateStackStormPackIndex.py
-*
-* Created on 17 Mar 2023
-*
-* @author: Jason Piszcyk
-* 
-* Generate the StackStorm Pack Index file from local files
-'''
+Generate the StackStorm Pack Index file from local files
 
+Copyright (C) 2025 Jason Piszcyk
+Email: Jason.Piszcyk@gmail.com
+
+All rights reserved.
+
+This software is private and may NOT be copied, distributed, reverse engineered,
+decompiled, or modified without the express written permission of the copyright
+holder.
+
+The copyright holder makes no warranties, express or implied, about its 
+suitability for any particular purpose.
+'''
+###########################################################################
+#
+# Imports
+#
+###########################################################################
+# Shared variables, constants, etc
+
+# System Modules
 import os
 import glob
 import yaml
@@ -17,92 +30,127 @@ from collections import OrderedDict
 import hashlib
 import time
 
+# Local app modules
 
-#===============================================================================
-# Global Variables (our Constants)
-#===============================================================================
-__BASE_DIR = "/Users/jp/Development"
-__PACK_INDEX_FILE = __BASE_DIR + "/StaticFiles/index.json"
-__PACK_SUBDIR_LIST = ["actions", "sensors", "rules"]
-__GITHUB_URL_BASE = "https://github.com/JasonPiszcyk/"
+# Imports for python variable type hints
 
 
-#===============================================================================
-# Main processing
-#===============================================================================
+###########################################################################
+#
+# Module Specific Items
+#
+###########################################################################
+#
+# Types
+#
 
-# Create a Dict with the values for the index
-index_dict = OrderedDict({
-    'packs': OrderedDict(),
-    'metadata': OrderedDict([
-        ('generated_ts', None),
-        ('hash', None)
-    ])
-})
+#
+# Constants
+#
+BASE_DIR = "/Users/jp/Development"
+PACK_INDEX_FILE =  f"{BASE_DIR}/StaticFiles/index.json"
+PACK_SUBDIR_LIST = ["actions", "sensors", "rules"]
+GITHUB_URL_BASE = "https://github.com/JasonPiszcyk/"
 
-data_hash = hashlib.md5()
+#
+# Global Variables
+#
 
-# Get a list of directories/repositories
-repo_subdir_list = [f.name for f in os.scandir(__BASE_DIR) if f.is_dir()]
 
-# Process each repository witch a pack.yaml file
-for subdir_name in repo_subdir_list:
-    subdir = __BASE_DIR + "/" + subdir_name
+###########################################################################
+#
+# Module
+#
+###########################################################################
 
-    if os.path.isfile(subdir + "/pack.yaml"):
+
+###########################################################################
+#
+# The main code
+#
+###########################################################################
+'''
+Handle case of being run directly rather than imported
+'''
+if __name__ == "__main__":
+    # Create a Dict with the values for the index
+    _index_dict = OrderedDict({
+        'packs': {},
+        'metadata': OrderedDict([
+            ('generated_ts', 0),
+            ('hash', "")
+        ])
+    })
+
+    _data_hash = hashlib.md5()
+
+    # Get a list of directories/repositories
+    _repo_subdir_list = [f.name for f in os.scandir(BASE_DIR) if f.is_dir()]
+
+    # Process each repository witch a pack.yaml file
+    for _subdir_name in _repo_subdir_list:
+        _subdir = f"{BASE_DIR}/{_subdir_name}"
+        if not os.path.isfile(_subdir + "/pack.yaml"): continue
+
         # Extract info from the pack.yaml file
-        with open(subdir + "/pack.yaml", "r", encoding="utf8") as file:
-            pack_yaml = yaml.safe_load(file)
+        _pack_yaml = {}
+        with open(f"{_subdir}/pack.yaml", "r", encoding="utf8") as _file:
+            _pack_yaml = yaml.safe_load(_file)
 
-        data_hash.update(str(pack_yaml).encode('utf-8'))
+        _data_hash.update(str(_pack_yaml).encode('utf-8'))
+        _pack_ref = _pack_yaml['ref']
 
-        pack_ref = pack_yaml['ref']
         # Create the pack info
-        index_dict['packs'][pack_ref] = {
-            'name': pack_yaml['name'],
-            'description': pack_yaml['description'],
-            'version': pack_yaml['version'],
-            'repo_url': f"{__GITHUB_URL_BASE}{subdir_name}",
-            'author': pack_yaml['author'],
-            'email': pack_yaml['email']
+        _index_dict['packs'][_pack_ref] = { # type: ignore
+            'name': _pack_yaml['name'],
+            'description': _pack_yaml['description'],
+            'version': _pack_yaml['version'],
+            'repo_url': f"{GITHUB_URL_BASE}{_subdir_name}",
+            'author': _pack_yaml['author'],
+            'email': _pack_yaml['email']
         }
 
         # Go through the sub directories of the pack
-        index_dict['packs'][pack_ref]['content'] = {}
-        for resdir_name in __PACK_SUBDIR_LIST:
+        _index_dict['packs'][_pack_ref]['content'] = {} # type: ignore
+        for _resdir_name in PACK_SUBDIR_LIST:
             # Get a list of yaml files in this dir
-            resdir = subdir + "/" + resdir_name
-            yaml_list = glob.glob(resdir + "/*.yaml")
+            _resdir = f"{_subdir}/{_resdir_name}"
+            _yaml_list = glob.glob(_resdir + "/*.yaml")
 
-            resource_list = []
+            _resource_list = []
 
             # Process the files
-            for yaml_file in yaml_list:
-                if os.path.isfile(yaml_file):
-                    with open(yaml_file, "r") as file:
+            for _yaml_file in _yaml_list:
+                if os.path.isfile(_yaml_file):
+                    with open(_yaml_file, "r") as _file:
                         try:
-                            res_yaml = yaml.safe_load(file)
+                            _res_yaml = yaml.safe_load(_file)
                         except:
-                            pass
+                            _res_yaml = {}
                     
-                    if "name" in res_yaml:
-                        resource_list.append(res_yaml["name"])
-                    elif "class_name" in res_yaml:
-                        resource_list.append(res_yaml["class_name"])
+                    if "name" in _res_yaml:
+                        _resource_list.append(_res_yaml["name"])
+                    elif "class_name" in _res_yaml:
+                        _resource_list.append(_res_yaml["class_name"])
                     
             # Add the resource info
-            if len(resource_list) > 0:
-                index_dict['packs'][pack_ref]['content'][resdir_name] = {
-                        'count': len(resource_list),
-                        'resources': resource_list
-                    }       
+            if len(_resource_list) > 0:
+                _index_dict['packs'][_pack_ref]['content'][_resdir_name] = { # type: ignore
+                        'count': len(_resource_list),
+                        'resources': _resource_list
+                    } 
 
 
-# Generate the timestamp/hash value
-index_dict['metadata']['generated_ts'] = int(time.time())
-index_dict['metadata']['hash'] = data_hash.hexdigest()
+    # Generate the timestamp/hash value
+    _index_dict['metadata']['generated_ts'] = int(time.time()) # type: ignore
+    _index_dict['metadata']['hash'] = _data_hash.hexdigest() # type: ignore
 
-# Write the index file
-with open(__PACK_INDEX_FILE, 'w', encoding="utf8") as index_file:
-    json.dump(index_dict, index_file, indent=4, sort_keys=True, separators=(',', ': '))
-
+    # Write the index file
+    with open(PACK_INDEX_FILE, 'w', encoding="utf8") as index_file:
+        json.dump(
+            _index_dict,
+            index_file,
+            indent=4,
+            sort_keys=True,
+            separators=(',', ': ')
+        )

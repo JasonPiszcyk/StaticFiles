@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1758551416,
-        "hash": "e11e8cfbc37e4dac7025205070ae2fed"
+        "generated_ts": 1758552240,
+        "hash": "361c455b09f8f96bc95ecbf98805c482"
     },
     "packs": {
         "callidus-client": {
@@ -22,7 +22,7 @@
             "repo_url": "https://github.com/JasonPiszcyk/StackStorm-IASClnt-Template",
             "version": "0.1.0"
         },
-        "callidus-core": {
+        "calliduscore": {
             "author": "Jason Piszcyk",
             "content": {
                 "actions": {
@@ -41,15 +41,15 @@
                 "sensors": {
                     "count": 1,
                     "resources": [
-                        "callidus-core-ZMQSensor"
+                        "calliduscore-ZMQSensor"
                     ]
                 }
             },
             "description": "Callidus - Core Functionality",
             "email": "Jason.Piszcyk@gmail.com",
-            "name": "callidus-core",
+            "name": "calliduscore",
             "repo_url": "https://github.com/JasonPiszcyk/StackStorm-Callidus-Core",
-            "version": "1.3.0"
+            "version": "1.3.1"
         },
         "iasadmin": {
             "author": "Jason Piszcyk",

@@ -31,7 +31,7 @@ dnf install -y epel-release
 dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 dnf config-manager --add-repo https://repo.piszcyk.com/rpms/rocky/9/piszcyk.repo
 
-# Install the ias-appliance RPM - Will install all dependant packages
-dnf install -y ias-appliance
+# Install the callidus-appliance RPM - Will install all dependant packages
+dnf install -y callidus-appliance
 
 exit 0

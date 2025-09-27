@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 #
-# Script Name:  prepare_ias_appliance.sh
+# Script Name:  prepare_callidus_appliance.sh
 # Written By:   Jason Piszcyk
 # Version:      2.0
-# Description:  Script to prepare a system for config as an IAS appliance
+# Description:  Script to prepare a system for config as a Callidus appliance
 #
-# Copyright (c) 2024 Iocane Pty Ltd
+# Copyright (c) 2024 Jason Piszcyk
 #
 # Ignore shellcheck checking on certain things in this file
 # shellcheck disable=SC2119,SC2317

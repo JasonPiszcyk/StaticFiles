@@ -1,7 +1,7 @@
 {
     "metadata": {
-        "generated_ts": 1759499088,
-        "hash": "44303eb426d4fc58bb8d33555471891a"
+        "generated_ts": 1759666689,
+        "hash": "ed49a70311e18d352c5e78d9e047d59e"
     },
     "packs": {
         "callidus-client": {
@@ -49,7 +49,7 @@
             "email": "Jason.Piszcyk@gmail.com",
             "name": "calliduscore",
             "repo_url": "https://github.com/JasonPiszcyk/StackStorm-Callidus-Core",
-            "version": "1.3.31"
+            "version": "1.3.32"
         },
         "iasadmin": {
             "author": "Jason Piszcyk",

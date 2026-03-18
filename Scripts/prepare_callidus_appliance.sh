@@ -33,10 +33,16 @@ dnf config-manager --add-repo https://repo.piszcyk.com/rpms/rocky/9/piszcyk.repo
 
 # Install the appropriate callidus-appliance RPM - Will install all dependant
 # packages
+VER_FILE="/opt/callidus/etc/version.conf"
+
 if [ "${1}" == "client" ]; then
   dnf install -y callidus-appliance-client
+  crudini --inplace --set "${VER_FILE}" "Appliance" "role" "client"
+
 elif [ "${1}" == "controller" ]; then
   dnf install -y callidus-appliance-controller
+  crudini --inplace --set "${VER_FILE}" "Appliance" "role" "controller"
+
 else
   dnf install -y callidus-appliance-base
 fi

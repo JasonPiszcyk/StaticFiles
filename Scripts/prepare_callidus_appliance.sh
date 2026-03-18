@@ -2,10 +2,10 @@
 #
 # Script Name:  prepare_callidus_appliance.sh
 # Written By:   Jason Piszcyk
-# Version:      2.0
+# Version:      2.1
 # Description:  Script to prepare a system for config as a Callidus appliance
 #
-# Copyright (c) 2024 Jason Piszcyk
+# Copyright (c) 2026 Jason Piszcyk
 #
 # Ignore shellcheck checking on certain things in this file
 # shellcheck disable=SC2119,SC2317
@@ -31,7 +31,14 @@ dnf install -y epel-release
 dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 dnf config-manager --add-repo https://repo.piszcyk.com/rpms/rocky/9/piszcyk.repo
 
-# Install the callidus-appliance RPM - Will install all dependant packages
-dnf install -y callidus-appliance
+# Install the appropriate callidus-appliance RPM - Will install all dependant
+# packages
+if [ "${1}" == "client" ]; then
+  dnf install -y callidus-appliance-client
+elif [ "${1}" == "controller" ]; then
+  dnf install -y callidus-appliance-controller
+else
+  dnf install -y callidus-appliance-base
+fi
 
 exit 0
